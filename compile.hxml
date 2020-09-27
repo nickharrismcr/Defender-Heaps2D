@@ -1,0 +1,8 @@
+# class paths
+-cp src
+
+# entry point
+-main Main
+
+# output
+-hl bin/ecs.hl
