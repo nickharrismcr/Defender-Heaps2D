@@ -19,6 +19,7 @@ class Entity {
 	{
 		components[this.klass(c)]=c;
 	}
+
 	public function removeComponent(c:Component):Void
 	{
 		this.components.remove(this.klass(c));
@@ -28,9 +29,17 @@ class Entity {
 	{
 		return components; 
 	}
-	public function has(component:Component):Bool
+
+	public function get<T>(component:Class<T>):Null<T>
 	{
-		return components.exists(this.klass(component));
+		var c = components[Type.getClassName(component)];
+		var ret:Null<T>=cast c;
+		return ret;
+	}
+
+	public function has(component:Class<Component>):Bool
+	{
+		return components.exists(Type.getClassName(component));
 	}
 
 	private function klass(c:Component):String

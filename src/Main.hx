@@ -3,6 +3,7 @@ import ecs.Entity;
 import ecs.Filter;
 import ecs.Component;
 import ecs.System;
+import ecs.Engine;
 
 class MoveComponent extends Component	
 {
@@ -32,7 +33,15 @@ class MoveSystem implements ISystem extends System
 		this.filter.add(MoveComponent);
 	}	
 	public override function update(dt:Float):Void
-	{}
+	{
+		for ( e in this.targets )
+		{
+			var c=e.get(MoveComponent);
+			trace(c.x);
+			trace(c.y);
+			var c=e.get(DrawComponent);
+		}
+	}
 }
 
 
@@ -46,8 +55,11 @@ class Main {
 
 		var sys=new MoveSystem();
 		var ent=new Entity();
-		ent.addComponent(new DrawComponent());
-		sys.addEntity(ent);
+		ent.addComponent(new MoveComponent());
+		var eng=new Engine();
+		eng.addUpdateSystem(sys);
+		eng.addEntity(ent);
+		eng.update(0);
 	}
 }
 

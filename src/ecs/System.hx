@@ -1,6 +1,7 @@
 package ecs;
 
 import ecs.Entity;
+import ecs.Engine;
 
 interface ISystem { 
 
@@ -18,16 +19,17 @@ class System implements ISystem  {
 		this.targets=new Array<Entity>();
 	}
 
-	public function addEntity(e:Entity):Void
+	@:allow(ecs.Engine)
+	private function addEntity(e:Entity):Void
 	{
 		var components = e.getComponents();
 		for ( c in this.filter.requires() )
 		{
 			if (components[c] == null) return;
 		}
-		trace("added");
 		targets.push(e);
 	}
+
 	public function update(dt:Float):Void
 	{}
 }
