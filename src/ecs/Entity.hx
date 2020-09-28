@@ -1,10 +1,12 @@
 package ecs;
 
+import logging.Logging;
+
 class Entity { 
 
 	static var next_id:Int=0;
 	public var id:Int;
-	public var engine:Engine;
+	public var engine:Null<Engine>;
 
 	private var components:Map<String,Component>;
 
@@ -17,12 +19,20 @@ class Entity {
 
 	public function addComponent(c:Component):Void
 	{
+		Logging.get().trace("added component "+this.klass(c));
+
 		components[this.klass(c)]=c;
+		if (this.engine != null ) { 
+			this.engine.addComponent(this,c);
+		}
 	}
 
 	public function removeComponent(c:Component):Void
 	{
 		this.components.remove(this.klass(c));
+		if (this.engine != null ) { 
+			this.engine.removeComponent(this,c);
+		}
 	}
 
 	public function getComponents():Map<String,Component>

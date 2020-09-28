@@ -1,7 +1,14 @@
 package ecs;
 
-class Component
+interface IComponent
 {
-	public function new()
-	{}
+	public var typeName:String;
 }
+
+class Component implements IComponent
+{
+	public var typeName:String;
+}
+
+
+ 

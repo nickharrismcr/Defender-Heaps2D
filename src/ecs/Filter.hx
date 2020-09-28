@@ -14,10 +14,10 @@ abstract Components(Array<Class<Component>>) from Array<Class<Component>> to Arr
 
 class Filter
 {
-	public var _required:Array<String>;
+	public var required:Array<String>;
 	public function new()
 	{
-		this._required=new Array<String>();
+		this.required=new Array<String>();
 	}
 
 	// component class or list of component classes
@@ -25,13 +25,18 @@ class Filter
 	{
 		for ( c in components ) 
 		{
-			this._required.push(Type.getClassName(c));
+			this.required.push(Type.getClassName(c));
 		}
+	}
+
+	public function needsComponent(c:Component)
+	{
+		return this.required.contains(c.typeName);
 	}
 
 	public function requires():Array<String>
 	{
-		return _required;
+		return required;
 	}
 }
 

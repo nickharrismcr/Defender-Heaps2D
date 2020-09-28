@@ -17,23 +17,64 @@ class Engine
 	{
 		this.update_systems.push(s);
 	}
+
 	public function addDrawSystem(s:System):Void
 	{
-		draw_systems.push(s);
+		this.draw_systems.push(s);
 	}
 
 	public function addEntity(e:Entity)
 	{
-		for ( s in update_systems )
-		{
-			s.addEntity(e);
+		e.engine=this;
+		for ( s in this.update_systems ) {
+			s.addEntityIfReqd(e);
 		}
-		for ( s in draw_systems )
-		{
-			s.addEntity(e);
+		for ( s in this.draw_systems ){
+			s.addEntityIfReqd(e);
 		}
 	}
 
+	public function removeEntity(e:Entity)
+	{
+		for ( s in this.update_systems){
+			s.removeEntity(e);
+		}
+		for ( s in this.draw_systems) {
+			s.removeEntity(e);
+		}
+	}
+
+	public function addComponent(e:Entity, c:Component)
+	{
+		for ( s in this.update_systems)
+		{
+			if (s.needsComponent(c)){
+				s.addEntityIfReqd(e);
+			}
+		}
+		for ( s in this.draw_systems)
+		{
+			if (s.needsComponent(c)) {
+				s.addEntityIfReqd(e);
+			}
+		}
+	}
+
+	public function removeComponent(e:Entity, c:Component)
+	{
+		for ( s in this.update_systems)
+		{
+			if (s.needsComponent(c)){
+				s.removeEntity(e);
+			}
+		}
+		for ( s in this.draw_systems)
+		{
+			if (s.needsComponent(c)) {
+				s.removeEntity(e);
+			}
+		}
+	}
 
 	public function update(dt:Float)
 	{
