@@ -8,6 +8,9 @@ interface IComponent
 class Component implements IComponent
 {
 	public var typeName:String;
+	public function new() {
+		this.typeName=Type.getClassName(Type.getClass(this));
+	}	
 }
 
 

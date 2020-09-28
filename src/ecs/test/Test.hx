@@ -9,20 +9,13 @@ import ecs.Engine;
 
 class MoveComponent extends Component	
 {
-    public function new ()
-    {
-		//TODO macro 
-        this.typeName=Type.getClassName(Type.getClass(this));
-    }
+    public function new () super();
 	public var m="move";
 }
 
 class PosComponent extends Component	
 {
-	public function new ()
-	{
-		this.typeName=Type.getClassName(Type.getClass(this));
-	}
+	public function new () super();
 	public var p="pos";
 }
 
