@@ -10,13 +10,13 @@ import ecs.Engine;
 class MoveComponent extends Component	
 {
     public function new () super();
-	public var m="move";
+	public var m="moveval";
 }
 
 class PosComponent extends Component	
 {
 	public function new () super();
-	public var p="pos";
+	public var p="posval";
 }
 
 
@@ -35,7 +35,7 @@ class MoveSystem implements ISystem extends System
 		{
             var m=e.get(MoveComponent).m;
             var id=e.id;
-            trace ('move $id $m');
+            Logging.trace ('move system update E $id move:$m');
 		}
 	}
 }
@@ -55,7 +55,7 @@ class PosSystem implements ISystem extends System
 		{
             var p=e.get(PosComponent).p;
             var id=e.id;
-            trace ('pos $id $p');
+            Logging.trace ('pos system update E $id pos:$p');
 		}
 	}
 }
@@ -76,7 +76,7 @@ class MovePosSystem implements ISystem extends System
             var m=e.get(MoveComponent).m;
             var p=e.get(PosComponent).p;
             var id=e.id;
-            trace ('movepos $id $m $p');
+            Logging.trace ('movepos system update : E $id move:$m pos:$p');
     
 		}
 	}
@@ -89,7 +89,8 @@ class Test {
         var eng=new Engine();
 		var msys=new MoveSystem();
 		var psys=new PosSystem();
-        var mpsys=new MovePosSystem();
+		var mpsys=new MovePosSystem();
+		
         eng.addUpdateSystem(msys);
 		eng.addUpdateSystem(mpsys);
 		eng.addUpdateSystem(psys);
@@ -105,7 +106,12 @@ class Test {
         eng.update(0);
 
         me.addComponent(new PosComponent());
-        eng.update(0);
+		eng.update(0);
+		
+		me.deactivate();
+		eng.update(0);
+		me.activate();
+		eng.update(0);
         
 	}
 }

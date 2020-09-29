@@ -9,7 +9,8 @@ class Entity {
 	public var engine:Null<Engine>;
 
 	private var components:Map<String,Component>;
-
+	private var active:Bool;
+	
 	public function new()
 	{
 		this.id=Entity.next_id;
@@ -17,11 +18,38 @@ class Entity {
 		components=new Map<String,Component>();
 	}
 
+	public function isActive():Bool
+	{
+		return this.active;
+	}
+
+	public function activate()
+	{
+		if (! this.active) {
+			Logging.trace('Activated ${this.id}');
+			this.active=true;
+			if (this.engine != null){
+				this.engine.onActivateEntity(this);
+			}
+		}
+	}
+ 
+	public function deactivate()
+	{
+		if (this.active) {
+			Logging.trace('Deactivated ${this.id}');
+			this.active=false;
+			if (this.engine != null){
+				this.engine.onDeactivateEntity(this);
+			}
+		}  
+	}
+
 	public function addComponent(c:Component):Void
 	{
-		Logging.get().trace("added component "+this.klass(c));
+		Logging.trace('added component ${Util.klass(c)} to Entity ${this.id}');
 
-		components[this.klass(c)]=c;
+		components[Util.klass(c)]=c;
 		if (this.engine != null ) { 
 			this.engine.addComponent(this,c);
 		}
@@ -29,7 +57,9 @@ class Entity {
 
 	public function removeComponent(c:Component):Void
 	{
-		this.components.remove(this.klass(c));
+		Logging.trace('Removed component ${Util.klass(c)} from Entity ${this.id}');
+
+		this.components.remove(Util.klass(c));
 		if (this.engine != null ) { 
 			this.engine.removeComponent(this,c);
 		}
@@ -52,10 +82,7 @@ class Entity {
 		return components.exists(Type.getClassName(component));
 	}
 
-	private function klass(c:Component):String
-	{
-		return Type.getClassName(Type.getClass(c));
-	}
+	
 }
 
 	

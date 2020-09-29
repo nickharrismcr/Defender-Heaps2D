@@ -81,5 +81,10 @@ class Logging {
 		}
 		return Logging.logger;
 	}
+
+	public static function trace(s:String,?pos:haxe.PosInfos)
+	{
+		Logging.get().trace(s,pos);
+	}
 }
 

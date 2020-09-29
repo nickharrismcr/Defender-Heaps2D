@@ -13,8 +13,10 @@ interface ISystem {
 
 class System implements ISystem  { 
 
-	var targets:Map<Int,Entity>;
-	var filter:Filter;
+	public var active:Bool;
+
+	private var filter:Filter;
+	private var targets:Map<Int,Entity>;
 
 	public function new() 
 	{
@@ -36,14 +38,15 @@ class System implements ISystem  {
 		}
 
 		var name=Type.getClassName(Type.getClass(this)); 
-		var id=e.id;
-		Logging.get().trace('System $name added entity $id');
+		Logging.trace('System $name added entity ${e.id}');
 		targets[e.id]=e;
 	}
 
 	@:allow(ecs.Engine)
 	private function removeEntity(e:Entity):Void
 	{
+		var name=Type.getClassName(Type.getClass(this)); 
+		Logging.trace('System $name removed entity ${e.id}');
 		targets.remove(e.id);
 	}	
 	
