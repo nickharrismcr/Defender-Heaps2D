@@ -6,17 +6,20 @@ import ecs.Filter;
 import ecs.Component;
 import ecs.System;
 import ecs.Engine;
+import ecs.Enums;
 
-class MoveComponent extends Component	
+class MoveComponent implements IComponent	
 {
-    public function new () super();
+    public var type=Move;
 	public var m="moveval";
+	public function new() {}
 }
 
-class PosComponent extends Component	
+class PosComponent implements IComponent	
 {
-	public function new () super();
+	public var type=Pos;
 	public var p="posval";
+	public function new() {}
 }
 
 
@@ -26,16 +29,17 @@ class MoveSystem implements ISystem extends System
 	{
 		super();
 		this.filter=new Filter();
-		this.filter.add(MoveComponent);
+		this.filter.add(Move);
+		this.type=Move;
 	}	
 
 	public override function update(dt:Float):Void
 	{
 		for ( e in this.targets )
 		{
-            var m=e.get(MoveComponent).m;
+            var mm=e.get(Move).m;
             var id=e.id;
-            Logging.trace ('move system update E $id move:$m');
+            Logging.trace ('${this.type} system update E $id move:$mm');
 		}
 	}
 }
@@ -46,16 +50,17 @@ class PosSystem implements ISystem extends System
 	{
 		super();
 		this.filter=new Filter();
-		this.filter.add(PosComponent);
+		this.filter.add(Pos);
+		this.type=Pos;
 	}	
 
 	public override function update(dt:Float):Void
 	{
 		for ( e in this.targets )
 		{
-            var p=e.get(PosComponent).p;
+            var p=e.get(Pos).p;
             var id=e.id;
-            Logging.trace ('pos system update E $id pos:$p');
+            Logging.trace ('${this.type} system update E $id pos:$p');
 		}
 	}
 }
@@ -66,17 +71,18 @@ class MovePosSystem implements ISystem extends System
 	{
 		super();
 		this.filter=new Filter();
-		this.filter.add([MoveComponent,PosComponent]);
+		this.filter.add([Move,Pos]);
+		this.type=MovePos;
 	}	
 
 	public override function update(dt:Float):Void
 	{
 		for ( e in this.targets )
 		{
-            var m=e.get(MoveComponent).m;
-            var p=e.get(PosComponent).p;
+            var m=e.get(Move).m; 
+            var p=e.get(Pos).p;
             var id=e.id;
-            Logging.trace ('movepos system update : E $id move:$m pos:$p');
+            Logging.trace ('${this.type} system update : E $id move:$m pos:$p');
     
 		}
 	}

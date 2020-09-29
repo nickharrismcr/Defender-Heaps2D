@@ -1,6 +1,8 @@
 package ecs;
 
 import logging.Logging;
+import ecs.Component;
+import ecs.Enums;
 
 class Entity { 
 
@@ -8,14 +10,14 @@ class Entity {
 	public var id:Int;
 	public var engine:Null<Engine>;
 
-	private var components:Map<String,Component>;
+	private var components:Map<ComponentType,IComponent>;
 	private var active:Bool;
 	
 	public function new()
 	{
 		this.id=Entity.next_id;
 		Entity.next_id++;
-		components=new Map<String,Component>();
+		components=new Map<ComponentType,IComponent>();
 	}
 
 	public function isActive():Bool
@@ -45,41 +47,41 @@ class Entity {
 		}  
 	}
 
-	public function addComponent(c:Component):Void
+	public function addComponent(c:IComponent):Void
 	{
-		Logging.trace('added component ${Util.klass(c)} to Entity ${this.id}');
+		Logging.trace('added component ${c.type} to Entity ${this.id}');
 
-		components[Util.klass(c)]=c;
+		components[c.type]=c;
 		if (this.engine != null ) { 
 			this.engine.addComponent(this,c);
 		}
 	}
 
-	public function removeComponent(c:Component):Void
+	public function removeComponent(c:IComponent):Void
 	{
-		Logging.trace('Removed component ${Util.klass(c)} from Entity ${this.id}');
+		Logging.trace('Removed component ${c.type} from Entity ${this.id}');
 
-		this.components.remove(Util.klass(c));
+		this.components.remove(c.type);
 		if (this.engine != null ) { 
 			this.engine.removeComponent(this,c);
 		}
 	}
 
-	public function getComponents():Map<String,Component>
+	public function getComponents():Map<ComponentType,IComponent>
 	{
 		return components; 
 	}
-
-	public function get<T>(component:Class<T>):Null<T>
+ 
+	public function get<T>(component_type:ComponentType):Null<T>
 	{
-		var c = components[Type.getClassName(component)];
+		var c = components[component_type];
 		var ret:Null<T>=cast c;
 		return ret;
 	}
 
-	public function has(component:Class<Component>):Bool
+	public function has(component:ComponentType):Bool
 	{
-		return components.exists(Type.getClassName(component));
+		return components.exists(component);
 	}
 
 	

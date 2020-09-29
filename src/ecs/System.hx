@@ -3,10 +3,12 @@ package ecs;
 import ecs.Entity;
 import ecs.Engine;
 import ecs.Component;
+import ecs.Enums;
 import logging.Logging;
 
 interface ISystem { 
 
+	public var type:SystemType;
 	public function update(dt:Float):Void;
 	private var filter:Filter;
 }
@@ -14,7 +16,8 @@ interface ISystem {
 class System implements ISystem  { 
 
 	public var active:Bool;
-
+	public var type:SystemType;
+	
 	private var filter:Filter;
 	private var targets:Map<Int,Entity>;
 
@@ -23,7 +26,7 @@ class System implements ISystem  {
 		this.targets=new Map<Int,Entity>();
 	}
 
-	public function needsComponent(c:Component):Bool
+	public function needsComponent(c:ComponentType):Bool
 	{
 		return this.filter.needsComponent(c);
 	}
@@ -37,16 +40,15 @@ class System implements ISystem  {
 			if (components[c] == null) return;
 		}
 
-		var name=Type.getClassName(Type.getClass(this)); 
-		Logging.trace('System $name added entity ${e.id}');
+
+		Logging.trace('System ${this.type} added entity ${e.id}');
 		targets[e.id]=e;
 	}
 
 	@:allow(ecs.Engine)
 	private function removeEntity(e:Entity):Void
 	{
-		var name=Type.getClassName(Type.getClass(this)); 
-		Logging.trace('System $name removed entity ${e.id}');
+		Logging.trace('System ${this.type} removed entity ${e.id}');
 		targets.remove(e.id);
 	}	
 	

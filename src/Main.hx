@@ -1,11 +1,13 @@
  
 import ecs.test.Test;
+import logging.Logging;
  
 class Main {
 
 	public static function main():Void
 	{
-		 Test.run();
+		Logging.level=TRACE ;
+		Test.run();
 	}
 }
 

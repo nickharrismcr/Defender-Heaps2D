@@ -1,12 +1,13 @@
 package ecs;
 
 import ecs.Component;
+import ecs.Enums;
 
 @:forward
-abstract Components(Array<Class<Component>>) from Array<Class<Component>> to Array<Class<Component>>
+abstract Components(Array<ComponentType>) from Array<ComponentType> to Array<ComponentType>
 {
 	@:from
-	public static inline function fromComponent(component:Class<Component>):Components
+	public static inline function fromComponent(component:ComponentType):Components
 	{
 		return [component]; 
 	}
@@ -14,10 +15,10 @@ abstract Components(Array<Class<Component>>) from Array<Class<Component>> to Arr
 
 class Filter
 {
-	public var required:Array<String>;
+	public var required:Array<ComponentType>;
 	public function new()
 	{
-		this.required=new Array<String>();
+		this.required=new Array<ComponentType>();
 	}
 
 	// component class or list of component classes
@@ -25,16 +26,16 @@ class Filter
 	{
 		for ( c in components ) 
 		{
-			this.required.push(Type.getClassName(c));
+			this.required.push(c);
 		}
 	}
 
-	public function needsComponent(c:Component)
+	public function needsComponent(c:ComponentType)
 	{
-		return this.required.contains(c.typeName);
+		return this.required.contains(c);
 	}
 
-	public function requires():Array<String>
+	public function requires():Array<ComponentType>
 	{
 		return required;
 	}

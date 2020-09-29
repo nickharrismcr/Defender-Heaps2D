@@ -58,7 +58,7 @@ class Logger {
 class Logging {
 
 	static var logger:Logger;
-	public static var level:Levels;
+	public static var level:Levels=TRACE;
 
 	public static function levelString(level:Levels):String
 	{
@@ -77,7 +77,6 @@ class Logging {
 		if (Logging.logger==null)
 		{
 			Logging.logger=new Logger();
-			Logging.level=TRACE;
 		}
 		return Logging.logger;
 	}
@@ -85,6 +84,22 @@ class Logging {
 	public static function trace(s:String,?pos:haxe.PosInfos)
 	{
 		Logging.get().trace(s,pos);
+	}
+	public static function debug(s:String,?pos:haxe.PosInfos)
+	{
+		Logging.get().debug(s,pos);
+	}
+	public static function info(s:String,?pos:haxe.PosInfos)
+	{
+		Logging.get().info(s,pos);
+	}
+	public static function warning(s:String,?pos:haxe.PosInfos)
+	{
+		Logging.get().warning(s,pos);
+	}
+	public static function error(s:String,?pos:haxe.PosInfos)
+	{
+		Logging.get().error(s,pos);
 	}
 }
 

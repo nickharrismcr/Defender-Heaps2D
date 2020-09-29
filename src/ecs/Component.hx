@@ -1,17 +1,10 @@
 package ecs;
 
+import ecs.Enums;
+
 interface IComponent
 {
-	public var typeName:String;
-}
-
-class Component implements IComponent
-{
-	public var typeName:String;
-	public function new() {
-		this.typeName=Type.getClassName(Type.getClass(this));
-	}	
+	public var type:ComponentType;
 }
 
 
- 
