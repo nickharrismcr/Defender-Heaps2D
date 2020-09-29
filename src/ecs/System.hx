@@ -2,7 +2,7 @@ package ecs;
 
 import ecs.Entity;
 import ecs.Engine;
-import ecs.Component;
+import ecs.IComponent;
 import ecs.Enums;
 import logging.Logging;
 

@@ -1,6 +1,6 @@
 package ecs;
 
-import ecs.Component;
+import ecs.IComponent;
 import ecs.Enums;
 
 @:forward

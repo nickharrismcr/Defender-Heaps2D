@@ -1,7 +1,7 @@
 package ecs;
 
 import ecs.System;
-import ecs.Component;
+import ecs.IComponent;
 import logging.Logging;
 import ecs.Enums;
 
