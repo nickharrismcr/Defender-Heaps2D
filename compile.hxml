@@ -1,6 +1,10 @@
 # class paths
 -cp src
 
+# libs
+-lib heaps
+-lib hlsdl
+
 # entry point
 -main Main
 

@@ -16,40 +16,9 @@ import states.npc.lander.LanderMaterialize;
 import states.npc.lander.LanderWait;
 import components.update.PosComponent;
 import components.update.DrawComponent;
+import systems.DrawSystem;
 import event.MessageCentre;
-
-class TestEvent implements IEvent
-{
-	public var type:EventType = TestEventType;
-	public var entity:Entity;
-
-	public function new(e:Entity)
-	{
-		this.entity=e;
-	}
-}
-
-class DrawSystem extends System implements ISystem
-{
-	public function new()
-	{
-		super();
-		this.type=Draw;
-		this.filter=new Filter();
-		filter.add(Draw); 
-	}
-	public override function update(dt:Float)
-	{
-		for ( k => e in this.targets )
-		{
-			Logging.trace('Draw system update ${e.id}');
-		}
-	}
-	public function onEvent(ev:IEvent)
-	{
-		Logging.trace('Draw system got event ${ev.entity.id}');
-	}
-}
+import event.events.TestEvent;
 
 
 class Test {
@@ -63,6 +32,7 @@ class Test {
 
 		MessageCentre.register(TestEventType,testfn);
 		
+		Logging.level=ERROR;
 		
         var eng=new Engine();
 		var sys=new FSMSystem();
@@ -87,9 +57,8 @@ class Test {
 		var ev=new TestEvent(e);
 		MessageCentre.notify(ev);
 
-		for ( i in 1...5 ) { 
-			 eng.update(0);
-			 eng.draw(0);
-		}
+		eng.update(0);
+		eng.draw(0);
+		
 	}
 }
