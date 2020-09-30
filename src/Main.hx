@@ -1,7 +1,7 @@
  
-import ecs.test.Test;
 import logging.Logging;
- 
+import test.Test;
+
 class Main {
 
 	public static function main():Void

@@ -3,7 +3,7 @@ package ecs;
 import ecs.System;
 import ecs.IComponent;
 import logging.Logging;
-import ecs.Enums;
+import Enums;
 
 class Engine
 {
@@ -20,6 +20,8 @@ class Engine
 
 	public function addUpdateSystem(s:System):Void
 	{
+		Logging.trace('Added update system ${s.type} to Engine');
+		if (s.type==null) throw new haxe.Exception('System $s type is null');
 		s.active=true;
 		this.update_systems[s.type]=s;
 		this.systems[s.type]=s;
@@ -27,6 +29,9 @@ class Engine
 
 	public function addDrawSystem(s:System):Void
 	{
+		 
+		Logging.trace('Added draw system ${s.type} to Engine');
+		if (s.type==null) throw new haxe.Exception('System $s type is null');
 		s.active=true;
 		this.draw_systems[s.type]=s;
 		this.systems[s.type]=s;

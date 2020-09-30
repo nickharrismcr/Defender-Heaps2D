@@ -1,5 +1,7 @@
 package fsm;
-import ecs.Enums;
+
+import logging.Logging;
+import Enums;
 
 class StateTree
 {
@@ -20,8 +22,16 @@ class StateTree
 
     public function validTransition(from:States,to:States)
     {
-        if ( (! this.transitions.exists(from)) || (!this.transitions[from].contains(to))) {
+        if  ((! this.transitions.exists(from)) || ( ! this.checkTransitions(from,to)))  {
             throw new haxe.Exception('Invalid transition $from -> $to ');
         }
+    }
+
+    private function checkTransitions(from:States, to:States)
+    {
+        for ( v in this.transitions[from]) {
+            if (v.equals(to)) return true;
+        }
+        return false;
     }
 }

@@ -1,6 +1,6 @@
 package ecs;
 
-import ecs.Enums;
+import Enums;
 
 interface IComponent
 {

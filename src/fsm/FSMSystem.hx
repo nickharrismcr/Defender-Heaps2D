@@ -2,7 +2,7 @@ package fsm;
 
 import ecs.Filter;
 import ecs.System;
-import ecs.Enums;
+import Enums;
 import ecs.Entity;
 import fsm.StateTree;
 
@@ -18,11 +18,12 @@ class FSMSystem implements ISystem extends System
         this.filter=new Filter();
         this.filter.add(FSM);
         this.stateMap = new Map<States,IState>();
+        this.type=FSM;
     }
 
-    public function register(k:States,v:IState)
+    public function register(v:IState)
     {
-        this.stateMap[k]=v;
+        this.stateMap[v.state]=v;
     }
 
     public function setStateTree(s:StateTree)
@@ -40,8 +41,10 @@ class FSMSystem implements ISystem extends System
 
     private function process(e:Entity)
     {
-        var e_fsm:FSMComponent=e.get(FSM);
+        var e_fsm:FSMComponent = cast e.get(FSM);
         var statecls=this.stateMap[e_fsm.state];
+        if ( statecls == null ) throw new haxe.Exception('Unregistered state ${e_fsm.state}');
+
         if (e_fsm.next_state != null && e_fsm.next_state != e_fsm.state) {
             statecls.exit(e_fsm,e);
             this.stateTree.validTransition(e_fsm.state,e_fsm.next_state);

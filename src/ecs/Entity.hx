@@ -2,7 +2,8 @@ package ecs;
 
 import logging.Logging;
 import ecs.IComponent;
-import ecs.Enums;
+import Enums;
+
 
 class Entity { 
 

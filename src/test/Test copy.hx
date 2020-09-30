@@ -6,7 +6,7 @@ import ecs.Filter;
 import ecs.IComponent;
 import ecs.System;
 import ecs.Engine;
-import ecs.Enums;
+
 
 class MoveComponent implements IComponent	
 {

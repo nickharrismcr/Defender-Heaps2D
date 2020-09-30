@@ -1,8 +1,11 @@
-package ecs;
+
+enum EventType
+{
+    TestEventType;
+}
 
 enum ComponentType 
 {
-    Move;
     Pos;
     Draw;
     FSM;
@@ -10,9 +13,9 @@ enum ComponentType
 
 enum SystemType 
 {
-    Move;
     Pos;
-    MovePos;
+    Draw;
+    FSM;
 }
 
 enum States 
