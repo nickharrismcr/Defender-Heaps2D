@@ -9,17 +9,20 @@ enum ComponentType
     Pos;
     Draw;
     FSM;
+    Timer;
 }
 
 enum SystemType 
 {
-    Pos;
-    Draw;
-    FSM;
+    DrawSystem;
+    FSMSystem;
+    TimerSystem;
 }
 
 enum States 
 {
+    TestMove;
+    TestStop;
     Game(s:GameStates);
     Player(s:PlayerStates);
     Human(s:HumanStates);

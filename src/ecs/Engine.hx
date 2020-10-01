@@ -4,18 +4,26 @@ import ecs.System;
 import ecs.IComponent;
 import logging.Logging;
 import Enums;
+import ecs.Job;
 
 class Engine
 {
+	public var app:hxd.App;
+	
 	private var systems:Map<SystemType,System>;
 	private var update_systems:Map<SystemType,System>;
 	private var draw_systems:Map<SystemType,System>;
+	private var run_time:Float;
+	private var sched_queue:Array<Job>;
 
-	public function new()
+	public function new(app:hxd.App)
 	{
+		this.app=app;
 		this.systems = new Map<SystemType,System>();
 		this.update_systems=new Map<SystemType,System>();
 		this.draw_systems=new Map<SystemType,System>();
+		this.sched_queue= new Array<Job>();
+		this.run_time=0;
 	}
 
 	public function addUpdateSystem(s:System):Void
@@ -23,6 +31,7 @@ class Engine
 		Logging.trace('Added update system ${s.type} to Engine');
 		if (s.type==null) throw new haxe.Exception('System $s type is null');
 		s.active=true;
+		s.setEngine(this);
 		this.update_systems[s.type]=s;
 		this.systems[s.type]=s;
 	}
@@ -33,6 +42,7 @@ class Engine
 		Logging.trace('Added draw system ${s.type} to Engine');
 		if (s.type==null) throw new haxe.Exception('System $s type is null');
 		s.active=true;
+		s.setEngine(this);
 		this.draw_systems[s.type]=s;
 		this.systems[s.type]=s;
 	}
@@ -128,11 +138,27 @@ class Engine
 		}
 	}
 
+	public function schedule(delay:Float,func:()->Void)
+	{
+		var j = new Job(this.run_time+delay,func);
+		this.sched_queue.push(j);
+	}
+
 	public function update(dt:Float)
 	{
+		this.run_time += dt;
+
 		for ( k => s in update_systems )
 		{
 			if (s.active) s.update(dt);
+		}
+		for ( job in this.sched_queue )
+		{
+			if (this.run_time > job.scheduled_time)
+			{
+				job.func();
+				this.sched_queue.remove(job);
+			} 
 		}
 	}
 	public function draw(dt:Float)

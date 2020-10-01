@@ -2,24 +2,41 @@ package systems;
 
 import ecs.System;
 import ecs.Filter;
+import ecs.Entity;
 import event.MessageCentre;
 import Enums;
 import logging.Logging;
 
 class DrawSystem extends System implements ISystem
 {
-	public function new()
+	public function new( )
 	{
-		super();
-		this.type=Draw;
+		super( );
+		this.type=DrawSystem;
 		this.filter=new Filter();
 		filter.add(Draw); 
+		filter.add(Pos);
 	}
+
+	public override function onAddEntity(e:Entity)
+	{
+		var drawable=e.get(Draw).drawable;
+		this.engine.app.s2d.addChild(drawable);
+	}
+
+	public override function onRemoveEntity(e:Entity)
+	{
+		var drawable=e.get(Draw).drawable;
+		this.engine.app.s2d.removeChild(drawable);
+	}
+
 	public override function update(dt:Float)
 	{
-		for ( k => e in this.targets )
+		for ( e in this.targets )
 		{
-			Logging.trace('Draw system update ${e.id}');
+			var p=e.get(Pos);
+			var d=e.get(Draw);
+			d.drawable.setPosition(p.x,p.y);
 		}
 	}
 	public function onEvent(ev:IEvent)

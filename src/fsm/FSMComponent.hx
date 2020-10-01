@@ -12,8 +12,8 @@ class FSMComponent implements IComponent
     public function new(init_state:States) 
     {
         this.type=FSM;
-        this.state=init_state;
-        this.next_state=null;
+        this.state=null;
+        this.next_state=init_state;
     }
 }
 
