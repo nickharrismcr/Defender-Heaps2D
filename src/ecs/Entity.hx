@@ -58,14 +58,13 @@ class Entity {
 		}
 	}
 
-	public function removeComponent(c:IComponent):Void
+	public function removeComponent(c:ComponentType):Void
 	{
-		Logging.trace('Removed component ${c.type} from Entity ${this.id}');
-
-		this.components.remove(c.type);
+		Logging.trace('Removed component ${c} from Entity ${this.id}');
 		if (this.engine != null ) { 
 			this.engine.removeComponent(this,c);
 		}
+		this.components.remove(c);
 	}
 
 	public function getComponents():Map<ComponentType,IComponent>

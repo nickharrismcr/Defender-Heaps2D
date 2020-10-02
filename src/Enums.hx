@@ -1,28 +1,36 @@
 
 enum EventType
 {
-    TestEventType;
+    FireBullet;
 }
 
 enum ComponentType 
 {
     Pos;
     Draw;
+    DrawDisperse;
     FSM;
     Timer;
+    Star;
+    Bullet;
+    Deadly;
+    Shootable;
+    Collide;
 }
 
 enum SystemType 
 {
     DrawSystem;
+    DrawDisperseSystem;
     FSMSystem;
     TimerSystem;
+    StarSystem;
+    BulletSystem;
+    CollideSystem;
 }
 
 enum States 
 {
-    TestMove;
-    TestStop;
     Game(s:GameStates);
     Player(s:PlayerStates);
     Human(s:HumanStates);
@@ -102,4 +110,13 @@ enum BulletStates
     Die;
 }
 
-
+enum abstract PNG(String)
+{
+    var Lander = "lander.png";
+    var Baiter = "baiter.png";
+    var Bomber = "bomber.png";
+    var Swarmer = "swarmer.png";
+    var Pod = "pod.png";
+    var Human = "human.png";
+    var Bullet = "bullet.png";
+}

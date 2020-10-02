@@ -59,9 +59,11 @@ class System implements ISystem  {
 	@:allow(ecs.Engine)
 	private function removeEntity(e:Entity):Void
 	{
-		Logging.trace('System ${this.type} removed entity ${e.id}');
-		this.targets.remove(e.id);
-		this.onRemoveEntity(e);
+		if ( this.targets.exists(e.id)) {
+			Logging.trace('System ${this.type} removed entity ${e.id}');
+			this.targets.remove(e.id);
+			this.onRemoveEntity(e);
+		}
 	}	
 	
 	public function update(dt:Float):Void

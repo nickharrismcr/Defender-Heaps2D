@@ -15,6 +15,8 @@ class Engine
 	private var draw_systems:Map<SystemType,System>;
 	private var run_time:Float;
 	private var sched_queue:Array<Job>;
+	private var ents_with_comp:Map<ComponentType,Array<Entity>>;
+	private var entity_list:Map<Int,Entity>;
 
 	public function new(app:hxd.App)
 	{
@@ -22,7 +24,9 @@ class Engine
 		this.systems = new Map<SystemType,System>();
 		this.update_systems=new Map<SystemType,System>();
 		this.draw_systems=new Map<SystemType,System>();
+		this.ents_with_comp = new Map<ComponentType,Array<Entity>>();
 		this.sched_queue= new Array<Job>();
+		this.entity_list = new Map<Int,Entity>();
 		this.run_time=0;
 	}
 
@@ -67,6 +71,7 @@ class Engine
 		Logging.trace('Added Entity ${e.id} to Engine');
 		e.engine=this;
 		e.activate();
+		this.entity_list[e.id]=e;
 	}
 
 	public function onActivateEntity(e:Entity)
@@ -83,6 +88,8 @@ class Engine
 	public function removeEntity(e:Entity)
 	{
 		Logging.trace('Removed Entity ${e.id} from Engine');
+		this.entity_list.remove(e.id);
+
 		for ( k => s in this.update_systems){
 			s.removeEntity(e);
 		}
@@ -106,6 +113,13 @@ class Engine
 	private function addComponent(e:Entity, c:IComponent)
 	{
 		Logging.trace('Add component $c to ${e.id} ');
+		
+		if (! this.ents_with_comp.exists(c.type))
+		{
+			this.ents_with_comp[c.type]=[];
+		}
+		this.ents_with_comp[c.type].push(e);
+		
 		for ( k => s in this.update_systems)
 		{
 			if (s.needsComponent(c.type)){
@@ -121,21 +135,37 @@ class Engine
 	}
 
 	@:allow(ecs.Entity)
-	private function removeComponent(e:Entity, c:IComponent)
+	private function removeComponent(e:Entity, c:ComponentType)
 	{
 		Logging.trace('Remove component $c from ${e.id} ');
+		if ( this.ents_with_comp.exists(c))
+		{
+			this.ents_with_comp[c].remove(e);
+		}
+		
 		for ( k => s in this.update_systems)
 		{
-			if (s.needsComponent(c.type)){
+			if (s.needsComponent(c)){
 				s.removeEntity(e);
 			}
 		}
 		for ( k => s in this.draw_systems)
 		{
-			if (s.needsComponent(c.type)) {
+			if (s.needsComponent(c)) {
 				s.removeEntity(e);
 			}
 		}
+	}
+	private function hasEntity(e:Entity)
+	{
+		return this.entity_list.exists(e.id);
+	}
+
+	public function getEntitiesWithComponent(c:ComponentType):Array<Entity>
+	{
+		if ( this.ents_with_comp[c] == null ) return [];
+		// TODO : optimise?
+		return Lambda.filter(this.ents_with_comp[c], (e) -> e.isActive() && this.hasEntity(e));
 	}
 
 	public function schedule(delay:Float,func:()->Void)
@@ -152,6 +182,7 @@ class Engine
 		{
 			if (s.active) s.update(dt);
 		}
+
 		for ( job in this.sched_queue )
 		{
 			if (this.run_time > job.scheduled_time)

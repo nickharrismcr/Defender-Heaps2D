@@ -1,11 +1,9 @@
 package components.draw;
 
-import format.gif.Data.ColorTable;
+
 import h2d.Anim;
-import h2d.Bitmap;
 import ecs.IComponent;
 import Enums;
-import hxd.Math;
 
 class DrawComponent implements IComponent
 {

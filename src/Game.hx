@@ -1,17 +1,28 @@
+import components.update.CollideComponent;
+import components.update.ShootableComponent;
+import systems.BulletSystem;
+import components.update.StarComponent;
+import format.png.Data;
 import GFX;
 import components.update.TimerComponent;
-import systems.TimerSystem;
+import components.update.PosComponent;
+import components.draw.DrawDisperseComponent;
+import components.draw.DrawComponent;
+
 import fsm.StateTree;
 import fsm.FSMSystem;
 import fsm.FSMComponent;
-import components.update.PosComponent;
-import ecs.Entity;
-import components.draw.DrawComponent;
-import ecs.Engine;
-import systems.DrawSystem;
-import states.TestMove;
-import states.TestStop;
 
+import ecs.Entity;
+import ecs.Engine;
+
+import systems.DrawDisperseSystem;
+import systems.DrawSystem;
+import systems.TimerSystem;
+import systems.StarSystem;
+
+
+import event.MessageCentre;
 import logging.Logging;
 
 class Game
@@ -25,30 +36,51 @@ class Game
     {
         this.app=app;
         this.engine=new Engine(app);
+
         var draw_sys = new DrawSystem();
         this.engine.addDrawSystem(draw_sys);
-        var fsm_sys = new FSMSystem();
-        // register a state object with the fcm system
-        fsm_sys.register(new TestMove());
-        fsm_sys.register(new TestStop());
-        var stree = new StateTree();
-        stree.addTransition(TestMove,TestStop);
-        stree.addTransition(TestStop,TestMove);
-        fsm_sys.setStateTree(stree);
-        this.engine.addUpdateSystem(fsm_sys);
+        var dispdraw_sys = new DrawDisperseSystem();
+        this.engine.addDrawSystem(dispdraw_sys);
         var timer_sys = new TimerSystem();
         this.engine.addUpdateSystem(timer_sys);
+        var star_sys = new StarSystem(this.app.s2d);
+        this.engine.addUpdateSystem(star_sys);
+        var bullet_sys = new BulletSystem();
+        this.engine.addUpdateSystem(bullet_sys);
 
-        this.graphics = new GFX();
-        this.graphics.load("baiter.png",2,11,4);
-        this.graphics.load("lander.png",3,8,9);
-        this.graphics.load("mutant.png",5,8,9);
-        this.graphics.load("swarmer.png",1,5,4);
-
+        var fsm_sys = new FSMSystem();
+        // register a state object with the fcm system
+        fsm_sys.register(new states.npc.baiter.Chase());
+        fsm_sys.register(new states.npc.baiter.Die());
+        fsm_sys.register(new states.npc.lander.Search());
+        fsm_sys.register(new states.npc.lander.Die());
+        var stree = new StateTree();
+        stree.addTransition(Baiter(Chase),Baiter(Die));
+        stree.addTransition(Baiter(Die),Baiter(Chase));
+        stree.addTransition(Lander(Search),Lander(Die));
+        stree.addTransition(Lander(Die),Lander(Search));
+        fsm_sys.setStateTree(stree);
+        this.engine.addUpdateSystem(fsm_sys);
        
-        var f=this.instantiate(20);
-        for ( i in 1...20 ){
-            this.engine.schedule(i,f);
+        MessageCentre.register(FireBullet,bullet_sys.fireEvent);
+        GFX.init();
+
+
+        var f=this.instantiate_baiters(3);
+        this.engine.schedule(4,f);
+        var f=this.instantiate_landers(10);
+        this.engine.schedule(1,f);
+
+        // stars
+        for ( i in 1...50 ){
+            var s = new StarComponent();
+            var p = new PosComponent();
+            var t = new TimerComponent();
+            var e = new Entity();
+            e.addComponent(s);
+            e.addComponent(p);
+            e.addComponent(t);
+            this.engine.addEntity(e);
         }
     }
 
@@ -58,24 +90,52 @@ class Game
         this.engine.draw (dt);
     }
 
-    private function instantiate(n:Int)
+    private function instantiate_baiters(n:Int)
     {
+        
         return () -> {
-            for ( i in 1...n )
+            for ( i in 0...n )
             {
-                var dc = new DrawComponent(this.graphics.get('lander.png',5));
+                var dc = new DrawComponent(GFX.getAnim(Baiter));
                 var e = new Entity();
                 e.addComponent(dc);
                 var pc = new PosComponent();
                 e.addComponent(pc);
-                var fc = new FSMComponent(TestMove);
+                var fc = new FSMComponent(Baiter(Chase));
                 e.addComponent(fc);
                 var tc = new TimerComponent();
                 e.addComponent(tc);
+                var sc = new ShootableComponent();
+                e.addComponent(sc);
+                var cc = new CollideComponent();
+                e.addComponent(cc);
                 this.engine.addEntity(e);
             }
         } ;
     }
 
+    private function instantiate_landers(n:Int)
+    {
+        
+        return () -> {
+            for ( i in 0...n )
+            {
+                var dc = new DrawComponent(GFX.getAnim(Lander));
+                var e = new Entity();
+                e.addComponent(dc);
+                var pc = new PosComponent();
+                e.addComponent(pc);
+                var fc = new FSMComponent(Lander(Search));
+                e.addComponent(fc);
+                var tc = new TimerComponent();
+                e.addComponent(tc);
+                var sc = new ShootableComponent();
+                e.addComponent(sc);
+                var cc = new CollideComponent();
+                e.addComponent(cc);
+                this.engine.addEntity(e);
+            }
+        } ;
+    }
     
 }
