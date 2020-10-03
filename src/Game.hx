@@ -1,3 +1,11 @@
+
+import states.npc.baiter.Materialize;
+import states.npc.baiter.Chase;
+import states.npc.baiter.Die;
+import states.npc.lander.Materialize;
+import states.npc.lander.Search;
+import states.npc.lander.Die;
+
 import components.update.CollideComponent;
 import components.update.ShootableComponent;
 import components.update.StarComponent;
@@ -33,6 +41,7 @@ class Game
     var landers:Int=0;
     var landers_killed:Int=0;
     var campos:Float;
+    var tf:h2d.Text;
 
     public function new(app:hxd.App)
     {
@@ -52,15 +61,17 @@ class Game
 
         var fsm_sys = new FSMSystem();
         // register a state object with the fcm system
+        fsm_sys.register(new states.npc.baiter.Materialize());
         fsm_sys.register(new states.npc.baiter.Chase());
         fsm_sys.register(new states.npc.baiter.Die());
+        fsm_sys.register(new states.npc.lander.Materialize());
         fsm_sys.register(new states.npc.lander.Search());
         fsm_sys.register(new states.npc.lander.Die());
         var stree = new StateTree();
+        stree.addTransition(Baiter(Materialize),Baiter(Chase));
         stree.addTransition(Baiter(Chase),Baiter(Die));
-        stree.addTransition(Baiter(Die),Baiter(Chase));
+        stree.addTransition(Lander(Materialize),Lander(Search));
         stree.addTransition(Lander(Search),Lander(Die));
-        stree.addTransition(Lander(Die),Lander(Search));
         fsm_sys.setStateTree(stree);
         this.engine.addUpdateSystem(fsm_sys);
        
@@ -71,14 +82,22 @@ class Game
 
         var f=this.instantiate_baiters(1);
         this.engine.schedule(4,f);
-        this.landers+=20;
-        var f=this.instantiate_landers(20);
+        this.landers+=5;
+        var f=this.instantiate_landers(this.landers);
         this.engine.schedule(1,f);
 
         var f=this.instantiate_stars(50);
         this.engine.schedule(0.1,f);
 
         this.campos=0;
+
+        var font : h2d.Font = hxd.res.DefaultFont.get();
+        this.tf = new h2d.Text(font);
+        this.tf.text = "";
+        this.tf.textAlign = Center;
+        this.tf.setPosition(100,100);
+ 
+        this.app.s2d.addChild(this.tf);
     }
 
     public function update(dt:Float)
@@ -86,7 +105,11 @@ class Game
         this.engine.update(dt);
         this.engine.draw (dt);
         if (this.planet != null) this.planet.draw(campos);
-        campos--;
+        campos-=2;
+
+        var fps=Std.int(1/dt);
+        this.tf.text = '${fps}';
+
 
         if (this.landers_killed == this.landers || hxd.Key.isPressed(hxd.Key.SPACE) ) 
             this.engine.schedule(2,() -> hxd.System.exit());
@@ -109,13 +132,11 @@ class Game
         return () -> {
 
             for ( i in 0...n )
-            {
-                var dc = new DrawComponent(GFX.getAnim(Baiter));
+            {   
                 var e = new Entity();
-                e.addComponent(dc);
                 var pc = new PosComponent();
                 e.addComponent(pc);
-                var fc = new FSMComponent(Baiter(Chase));
+                var fc = new FSMComponent(Baiter(Materialize));
                 e.addComponent(fc);
                 var tc = new TimerComponent();
                 e.addComponent(tc);
@@ -132,19 +153,15 @@ class Game
         return () -> {
             for ( i in 0...n )
             {
-                var dc = new DrawComponent(GFX.getAnim(Lander));
-                var e = new Entity();
-                e.addComponent(dc);
+                var e = new Entity();   
                 var pc = new PosComponent();
                 e.addComponent(pc);
-                var fc = new FSMComponent(Lander(Search));
+                var fc = new FSMComponent(Lander(Materialize));
                 e.addComponent(fc);
                 var tc = new TimerComponent();
                 e.addComponent(tc);
                 var cc = new CollideComponent();
                 e.addComponent(cc);
-                var sc = new ShootableComponent();
-                e.addComponent(sc);
                 this.engine.addEntity(e);
             }
         } ;

@@ -12,7 +12,7 @@ class Main extends hxd.App {
 
 		Logging.level=ERROR;
 		win=hxd.Window.getInstance();
-		win.displayMode=Fullscreen;
+		 win.displayMode=Fullscreen;
 		game=new Game(this);
 		 
 	}

@@ -1,5 +1,6 @@
 package states.npc.lander;
 
+import components.update.ShootableComponent;
 import event.events.FireBulletEvent;
 import components.update.PosComponent;
 import fsm.IState;
@@ -18,16 +19,7 @@ class Search implements IState
 	
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
-		var pc:PosComponent = cast e.get(Pos);
-		if (pc.x==0){
-			pc.x=Std.random(e.engine.app.s2d.width)/2;
-			pc.y=Std.random(e.engine.app.s2d.height)/2;
-			Logging.trace('${e.id},${pc.x},${pc.y}');
-		}
-		pc.dx=Std.random(200)-100;
-		pc.dy=Std.random(200)-100;
-		var tc:TimerComponent = cast e.get(Timer);
-		tc.mark=tc.t + 8 + hxd.Math.random(8);
+		e.addComponent(new ShootableComponent());
 	}
 
 

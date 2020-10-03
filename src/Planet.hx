@@ -35,6 +35,7 @@ class Planet
                 if ( h <= this.mountain[i-this.mountain.length] ) break;
                 h-=4;
                 this.mountain[i-this.mountain.length] = h;
+               
             }
         }
     }
