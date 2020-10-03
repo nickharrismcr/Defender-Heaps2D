@@ -185,16 +185,17 @@ class Engine
 		}
 	}
 		
-	private function hasEntity(e:Entity)
+	public function getEntity(e:Int):Null<Entity>
 	{
-		return this.entity_list.exists(e.id);
+		if ( ! this.entity_list.exists(e)) return null;
+		return this.entity_list[e];
 	}
 
 	public function getEntitiesWithComponent(c:ComponentType):Array<Entity>
 	{
 		if ( this.ents_with_comp[c] == null ) return [];
 		// TODO : optimise?
-		return Lambda.filter(this.ents_with_comp[c], (e) -> e.isActive() && this.hasEntity(e));
+		return Lambda.filter(this.ents_with_comp[c], (e) -> e.isActive() && this.getEntity(e.id)!=null );
 	}
 
 	public function schedule(delay:Float,func:()->Void)

@@ -1,4 +1,5 @@
 
+import haxe.display.Display.KeywordKind;
 import states.npc.baiter.Materialize;
 import states.npc.baiter.Chase;
 import states.npc.baiter.Die;
@@ -13,6 +14,8 @@ import components.update.TimerComponent;
 import components.update.PosComponent;
 import components.draw.DrawDisperseComponent;
 import components.draw.DrawComponent;
+import components.update.HumanComponent;
+import components.update.HumanFinderComponent;
 
 import fsm.StateTree;
 import fsm.FSMSystem;
@@ -73,15 +76,35 @@ class Game
         fsm_sys.register(new states.npc.baiter.Die());
         fsm_sys.register(new states.npc.lander.Materialize());
         fsm_sys.register(new states.npc.lander.Search());
+        fsm_sys.register(new states.npc.lander.Pounce());
+        fsm_sys.register(new states.npc.lander.Kidnap());
+        fsm_sys.register(new states.npc.lander.Mutant());
         fsm_sys.register(new states.npc.lander.Die());
         fsm_sys.register(new states.npc.human.Walk());
+        fsm_sys.register(new states.npc.human.Grabbed());
         fsm_sys.register(new states.npc.human.Die());
         var stree = new StateTree();
+        
         stree.addTransition(Baiter(Materialize),Baiter(Chase));
         stree.addTransition(Baiter(Chase),Baiter(Die));
+
         stree.addTransition(Lander(Materialize),Lander(Search));
         stree.addTransition(Lander(Search),Lander(Die));
+        stree.addTransition(Lander(Search),Lander(Pounce));
+        stree.addTransition(Lander(Pounce),Lander(Die));
+        stree.addTransition(Lander(Pounce),Lander(Search));
+        stree.addTransition(Lander(Pounce),Lander(Kidnap));
+        stree.addTransition(Lander(Kidnap),Lander(Search));
+        stree.addTransition(Lander(Kidnap),Lander(Die));
+        stree.addTransition(Lander(Kidnap),Lander(Mutant));
+        stree.addTransition(Lander(Mutant),Lander(Die));
+
         stree.addTransition(Human(Walk),Human(Die));
+        stree.addTransition(Human(Walk),Human(Grabbed));
+        stree.addTransition(Human(Grabbed),Human(Die));
+        stree.addTransition(Human(Walk),Human(Falling));
+        stree.addTransition(Human(Falling),Human(Die));
+        
         fsm_sys.setStateTree(stree);
         this.engine.addUpdateSystem(fsm_sys);
        
@@ -189,6 +212,8 @@ class Game
                 e.addComponent(tc);
                 var cc = new CollideComponent();
                 e.addComponent(cc);
+                var hc = new HumanFinderComponent();
+                e.addComponent(hc);
                 this.engine.addEntity(e);
             }
         } ;
@@ -227,6 +252,8 @@ class Game
                 e.addComponent(cc);
                 var sc = new ShootableComponent();
                 e.addComponent(sc);
+                var hc = new HumanComponent();
+                e.addComponent(hc);
                 this.engine.addEntity(e);
             }
         } ;

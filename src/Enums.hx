@@ -18,6 +18,7 @@ enum ComponentType
     Shootable;
     Collide;
     Human;
+    HumanFinder;
 }
 
 enum SystemType 
@@ -75,7 +76,7 @@ enum LanderStates
     Wait;
     Materialize;
     Search;
-    Find;
+    Pounce;
     Kidnap;
     Mutant;
     Die;

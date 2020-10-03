@@ -4,7 +4,8 @@ class Config
 {
     public static var settings = {
         bullet_time:2,
-        world_width:12000
+        world_width:12000,
+        grab_speed:20
     }
 
     public static var graphics = {
