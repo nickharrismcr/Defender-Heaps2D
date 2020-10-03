@@ -12,6 +12,7 @@ import logging.Logging;
 
 class DrawSystem extends System implements ISystem
 {
+
 	public function new( )
 	{
 		super( );
@@ -23,7 +24,6 @@ class DrawSystem extends System implements ISystem
 
 	public override function onAddEntity(e:Entity)
 	{
-		
 		var dr:DrawComponent = cast e.get(Draw);
 		this.engine.app.s2d.addChild(dr.drawable);
 		Logging.trace('Draw system onAddEntity $e add child at ${dr.drawable.x},${dr.drawable.y}');
@@ -43,7 +43,6 @@ class DrawSystem extends System implements ISystem
 			var p:PosComponent = cast e.get(Pos);
 			var d:DrawComponent = cast e.get(Draw);
 			d.drawable.setPosition(p.x,p.y);
-			 
 		}
 	}
 
@@ -51,4 +50,4 @@ class DrawSystem extends System implements ISystem
 	{
 		Logging.trace('Draw system got event ${ev.entity.id}');
 	}
-}
+}  

@@ -1,9 +1,6 @@
 import components.update.CollideComponent;
 import components.update.ShootableComponent;
-import systems.BulletSystem;
 import components.update.StarComponent;
-import format.png.Data;
-import GFX;
 import components.update.TimerComponent;
 import components.update.PosComponent;
 import components.draw.DrawDisperseComponent;
@@ -20,8 +17,9 @@ import systems.DrawDisperseSystem;
 import systems.DrawSystem;
 import systems.TimerSystem;
 import systems.StarSystem;
+import systems.BulletSystem;
 
-
+import GFX;
 import event.MessageCentre;
 import logging.Logging;
 
@@ -30,7 +28,8 @@ class Game
     var engine:Engine;
     var app:hxd.App;
     var graphics:GFX;
-     
+    var landers:Int=0;
+    var landers_killed:Int=0;
 
     public function new(app:hxd.App)
     {
@@ -63,12 +62,14 @@ class Game
         this.engine.addUpdateSystem(fsm_sys);
        
         MessageCentre.register(FireBullet,bullet_sys.fireEvent);
+        MessageCentre.register(Killed,this.kill);
         GFX.init();
 
 
-        var f=this.instantiate_baiters(3);
+        var f=this.instantiate_baiters(1);
         this.engine.schedule(4,f);
-        var f=this.instantiate_landers(10);
+        this.landers+=20;
+        var f=this.instantiate_landers(20);
         this.engine.schedule(1,f);
 
         // stars
@@ -88,12 +89,26 @@ class Game
     {
         this.engine.update(dt);
         this.engine.draw (dt);
+
+        if (this.landers_killed == this.landers ) hxd.System.exit();
+    }
+
+    private function kill(ev:IEvent)
+    {
+        var e = ev.entity;
+        var ef:FSMComponent = cast e.get(FSM);
+        switch (ef.state) {
+            case Baiter(_): ef.next_state = Baiter(Die);
+            case Lander(_): { ef.next_state = Lander(Die); this.landers--; };
+            case _ : 
+        }
     }
 
     private function instantiate_baiters(n:Int)
     {
         
         return () -> {
+
             for ( i in 0...n )
             {
                 var dc = new DrawComponent(GFX.getAnim(Baiter));
@@ -105,8 +120,6 @@ class Game
                 e.addComponent(fc);
                 var tc = new TimerComponent();
                 e.addComponent(tc);
-                var sc = new ShootableComponent();
-                e.addComponent(sc);
                 var cc = new CollideComponent();
                 e.addComponent(cc);
                 this.engine.addEntity(e);
@@ -129,10 +142,10 @@ class Game
                 e.addComponent(fc);
                 var tc = new TimerComponent();
                 e.addComponent(tc);
-                var sc = new ShootableComponent();
-                e.addComponent(sc);
                 var cc = new CollideComponent();
                 e.addComponent(cc);
+                var sc = new ShootableComponent();
+                e.addComponent(sc);
                 this.engine.addEntity(e);
             }
         } ;

@@ -1,5 +1,6 @@
 package ecs;
 
+import haxe.io.Encoding;
 import ecs.System;
 import ecs.IComponent;
 import logging.Logging;
@@ -72,11 +73,16 @@ class Engine
 		e.engine=this;
 		e.activate();
 		this.entity_list[e.id]=e;
+	
 	}
 
 	public function onActivateEntity(e:Entity)
 	{
 		Logging.trace('Activated Entity ${e.id} in Engine');
+		for ( c in e.getComponents())
+		{
+			this.addToEntitiesWithComp(c,e);
+		}
 		for ( k => s in this.update_systems ) {
 			s.addEntityIfReqd(e);
 		}
@@ -89,6 +95,10 @@ class Engine
 	{
 		Logging.trace('Removed Entity ${e.id} from Engine');
 		this.entity_list.remove(e.id);
+		for ( c in e.getComponents())
+		{
+			this.removeFromEntitiesWithComp(c.type,e);
+		}
 
 		for ( k => s in this.update_systems){
 			s.removeEntity(e);
@@ -101,6 +111,11 @@ class Engine
 	public function onDeactivateEntity(e:Entity)
 	{
 		Logging.trace('Deactivate Entity ${e.id} in Engine');
+		for ( c in e.getComponents())
+		{
+			this.removeFromEntitiesWithComp(c.type,e);
+		}
+		
 		for ( k => s in this.update_systems){
 			s.removeEntity(e);
 		}
@@ -114,11 +129,7 @@ class Engine
 	{
 		Logging.trace('Add component $c to ${e.id} ');
 		
-		if (! this.ents_with_comp.exists(c.type))
-		{
-			this.ents_with_comp[c.type]=[];
-		}
-		this.ents_with_comp[c.type].push(e);
+		this.addToEntitiesWithComp(c,e);
 		
 		for ( k => s in this.update_systems)
 		{
@@ -138,10 +149,7 @@ class Engine
 	private function removeComponent(e:Entity, c:ComponentType)
 	{
 		Logging.trace('Remove component $c from ${e.id} ');
-		if ( this.ents_with_comp.exists(c))
-		{
-			this.ents_with_comp[c].remove(e);
-		}
+		this.removeFromEntitiesWithComp(c,e);
 		
 		for ( k => s in this.update_systems)
 		{
@@ -156,6 +164,24 @@ class Engine
 			}
 		}
 	}
+
+	private function addToEntitiesWithComp(c:IComponent,e:Entity)
+	{
+		if (! this.ents_with_comp.exists(c.type))
+		{
+			this.ents_with_comp[c.type]=[];
+		}
+		this.ents_with_comp[c.type].push(e);
+	}
+
+	private function removeFromEntitiesWithComp(c:ComponentType,e:Entity)
+	{
+		if ( this.ents_with_comp.exists(c))
+		{
+			this.ents_with_comp[c].remove(e);
+		}
+	}
+		
 	private function hasEntity(e:Entity)
 	{
 		return this.entity_list.exists(e.id);

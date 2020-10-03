@@ -2,6 +2,10 @@ import Enums;
 
 class Config
 {
+    public static var settings = {
+        bullet_time:2
+    }
+    
     public static var graphics = {
         lander : {
             png : PNG.Lander,

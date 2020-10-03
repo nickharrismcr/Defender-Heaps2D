@@ -7,6 +7,8 @@ import fsm.FSMComponent;
 import components.update.TimerComponent;
 import logging.Logging;
 import Enums;
+import event.MessageCentre;
+import event.events.FireBulletEvent;
 
 class Chase implements IState
 {
@@ -31,7 +33,7 @@ class Chase implements IState
 
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
-		var pc = e.get(Pos);
+		var pc:PosComponent = cast e.get(Pos);
 		pc.x=pc.x+pc.dx*dt;
 		pc.y=pc.y+pc.dy*dt;
 		if ( pc.x < 0 || pc.x > e.engine.app.s2d.width )
@@ -42,7 +44,17 @@ class Chase implements IState
 		{
 			pc.dy=-pc.dy;
 		}
-		
+		if ( Std.random(200) < 2 ){
+			
+			for ( oe in e.engine.getEntitiesWithComponent(Shootable))
+			{
+				if ( oe.id != e.id ){
+					var opc:PosComponent = cast oe.get(Pos);
+					MessageCentre.notify(new FireBulletEvent(e,pc,opc ));
+				}
+				break;
+			}
+		}
 	 
 	}
 

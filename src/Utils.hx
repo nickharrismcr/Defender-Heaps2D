@@ -14,10 +14,12 @@ class Utils
        return new h3d.Vector(r,g,b,1);
     }
 
-    public static function getBulletVector(x:Float,y:Float,targx:Float,targy:Float,time:Float)
+    public static function getBulletVector(firer:PosComponent,target:PosComponent,time:Float)
     {
-        var dx = (targx-x)/time;
-        var dy = (targy-y)/time;
+        var projected_x:Float = target.x + (target.dx*time);
+        var projected_y:Float = target.y + (target.dy*time);
+        var dx = (projected_x-firer.x)/time;
+        var dy = (projected_y-firer.y)/time;
         return {x:dx,y:dy};
     }
 }

@@ -1,14 +1,13 @@
 package systems;
-
-import fsm.FSMComponent;
-import components.update.CollideComponent;
-import components.draw.DrawComponent;
+ 
 import components.update.PosComponent;
 import components.update.TimerComponent;
-import components.draw.DrawComponent;
 import components.update.BulletComponent;
-import components.update.TimerComponent;
+import components.draw.DrawComponent;
+
 import event.events.FireBulletEvent;
+import event.events.KilledEvent;
+
 import ecs.System;
 import ecs.Filter;
 import ecs.Entity;
@@ -31,17 +30,18 @@ class BulletSystem extends System implements ISystem
 	public function fireEvent(event:IEvent)
 	{
 		var ev:FireBulletEvent = cast event;
-		this.fire(ev.x,ev.y,ev.targx,ev.targy,1);
+		this.fire(ev.firer,ev.target);
 	}
 
-	public function fire(x:Float,y:Float,targx:Float,targy:Float,time:Float)
+	public function fire(firer:PosComponent, target:PosComponent)
 	{
 		var e = new Entity();
 		e.addComponent(new TimerComponent());
 		var p = new PosComponent();
-		p.x = x; 
-		p.y = y;
-		var vec = Utils.getBulletVector(x,y,targx,targy,time);
+		p.x = firer.x; 
+		p.y = firer.y;
+		var time = Config.settings.bullet_time;
+		var vec = Utils.getBulletVector(firer,target,time);
 		p.dx = vec.x;
 		p.dy = vec.y;
 		e.addComponent(p);
@@ -65,7 +65,7 @@ class BulletSystem extends System implements ISystem
 				if ( od.drawable.getBounds().intersects(bd.drawable.getBounds()))
 				{
 					this.engine.removeEntity(e);
-					this.engine.removeEntity(other);
+					MessageCentre.notify(new KilledEvent(other));
 				}
 			}
 

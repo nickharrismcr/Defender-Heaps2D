@@ -1,5 +1,6 @@
 package event.events;
 
+import components.update.PosComponent;
 import event.MessageCentre;
 import ecs.Entity;
 import Enums;
@@ -8,17 +9,13 @@ class FireBulletEvent implements IEvent
 {
 	public var type:EventType = FireBullet;
 	public var entity:Entity;
-	public var x:Float;
-	public var y:Float;
-	public var targx:Float;
-	public var targy:Float;
+	public var firer:PosComponent;
+	public var target:PosComponent;
 
-	public function new(e:Entity,x:Float,y:Float,targx:Float,targy:Float)
+	public function new(e:Entity,firer:PosComponent,target:PosComponent)
 	{
 		this.entity=e;
-		this.x=x;
-		this.y=y;
-		this.targx=targx;
-		this.targy=targy;
+		this.firer=firer;
+		this.target=target;
 	}
 }

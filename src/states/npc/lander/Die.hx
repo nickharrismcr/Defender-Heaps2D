@@ -1,6 +1,7 @@
 package states.npc.lander;
 
 
+import components.update.ShootableComponent;
 import components.draw.DrawComponent;
 import fsm.IState;
 import ecs.Entity;
@@ -8,6 +9,7 @@ import fsm.FSMComponent;
 import logging.Logging;
 import Enums;
 import components.update.TimerComponent;
+import components.update.ShootableComponent;
 import components.draw.DrawDisperseComponent;
 
 class Die implements IState
@@ -21,6 +23,7 @@ class Die implements IState
 		var tc:TimerComponent = cast e.get(Timer);
 		tc.mark = tc.t + 1 + 2 * hxd.Math.random();
 		e.removeComponent(Draw);
+		e.removeComponent(Shootable);
 		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(Lander)));		 
 	}
 	public function update(c:FSMComponent,e:Entity,dt:Float)
@@ -31,14 +34,12 @@ class Die implements IState
 
 		if ( tc.t > tc.mark )
 		{
-			e.get(FSM).next_state = Lander(Search);
+			e.engine.removeEntity(e);
 		}
 	}
 	public function exit(c:FSMComponent,e:Entity,dt:Float)
 	{
-		e.removeComponent(DrawDisperse);
-		e.addComponent(new DrawComponent(GFX.getAnim(Lander)));	
-	 
+		 
 	}
 }
  

@@ -38,7 +38,6 @@ class Die implements IState
 	{
 		e.removeComponent(DrawDisperse);
 		e.addComponent(new DrawComponent(GFX.getAnim(Baiter)));	
-	 
 	}
 }
  

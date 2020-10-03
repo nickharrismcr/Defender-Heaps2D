@@ -2,6 +2,7 @@
 enum EventType
 {
     FireBullet;
+    Killed;
 }
 
 enum ComponentType 

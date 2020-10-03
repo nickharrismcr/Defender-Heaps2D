@@ -45,11 +45,7 @@ class Search implements IState
 			pc.dy=-pc.dy;
 		}
 
-		if ( Std.random(1000) < 2 ){
-			var tx = Std.random(e.engine.app.s2d.width);
-			var ty = Std.random(e.engine.app.s2d.height);
-			MessageCentre.notify(new FireBulletEvent(e,pc.x,pc.y, tx,ty ));
-		}
+		
 		
 		 
 	}
