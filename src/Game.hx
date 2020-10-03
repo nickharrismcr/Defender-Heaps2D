@@ -20,6 +20,7 @@ import systems.StarSystem;
 import systems.BulletSystem;
 
 import GFX;
+import Planet;
 import event.MessageCentre;
 import logging.Logging;
 
@@ -28,8 +29,10 @@ class Game
     var engine:Engine;
     var app:hxd.App;
     var graphics:GFX;
+    var planet:Planet;
     var landers:Int=0;
     var landers_killed:Int=0;
+    var campos:Float;
 
     public function new(app:hxd.App)
     {
@@ -64,7 +67,7 @@ class Game
         MessageCentre.register(FireBullet,bullet_sys.fireEvent);
         MessageCentre.register(Killed,this.kill);
         GFX.init();
-
+        this.engine.schedule(0.1, () -> this.planet=new Planet(this.app.s2d));
 
         var f=this.instantiate_baiters(1);
         this.engine.schedule(4,f);
@@ -72,25 +75,21 @@ class Game
         var f=this.instantiate_landers(20);
         this.engine.schedule(1,f);
 
-        // stars
-        for ( i in 1...50 ){
-            var s = new StarComponent();
-            var p = new PosComponent();
-            var t = new TimerComponent();
-            var e = new Entity();
-            e.addComponent(s);
-            e.addComponent(p);
-            e.addComponent(t);
-            this.engine.addEntity(e);
-        }
+        var f=this.instantiate_stars(50);
+        this.engine.schedule(0.1,f);
+
+        this.campos=0;
     }
 
     public function update(dt:Float)
     {
         this.engine.update(dt);
         this.engine.draw (dt);
+        if (this.planet != null) this.planet.draw(campos);
+        campos--;
 
-        if (this.landers_killed == this.landers ) hxd.System.exit();
+        if (this.landers_killed == this.landers || hxd.Key.isPressed(hxd.Key.SPACE) ) 
+            this.engine.schedule(2,() -> hxd.System.exit());
     }
 
     private function kill(ev:IEvent)
@@ -149,6 +148,22 @@ class Game
                 this.engine.addEntity(e);
             }
         } ;
+    }
+
+    private function instantiate_stars(n:Int)
+    {
+        return () -> {
+            for ( i in 1...n ){
+                var s = new StarComponent();
+                var p = new PosComponent();
+                var t = new TimerComponent();
+                var e = new Entity();
+                e.addComponent(s);
+                e.addComponent(p);
+                e.addComponent(t);
+                this.engine.addEntity(e);
+            }
+        };
     }
     
 }

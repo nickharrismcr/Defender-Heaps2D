@@ -3,9 +3,10 @@ import Enums;
 class Config
 {
     public static var settings = {
-        bullet_time:2
+        bullet_time:2,
+        world_width:12000
     }
-    
+
     public static var graphics = {
         lander : {
             png : PNG.Lander,
