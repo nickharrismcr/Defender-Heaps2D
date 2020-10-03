@@ -28,6 +28,13 @@ class Config
             xpixels : 3,
             ypixels : 3,
             anim_rate : 1
+        },
+        human : {
+            png : PNG.Human,
+            frames : 1,
+            xpixels : 3,
+            ypixels : 8,
+            anim_rate : 1
         }
     };
 }

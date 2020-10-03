@@ -1,4 +1,5 @@
 import Enums;
+import Camera;
 import Config;
 import h2d.Scene;
 
@@ -40,12 +41,17 @@ class Planet
         }
     }
 
-    public function draw(campos:Float){
+    public function at(pos:Int)
+    {
+        return this.mountain[Std.int(pos/4)];
+    }
+
+    public function draw(){
 
         this.graphics.clear();
         this.graphics.beginFill(0x994400);
         var x = 0;
-        var i = Std.int(campos);
+        var i = Std.int(Camera.position/4);
         var step = 4;
 
         while ( x < this.scene.width ){

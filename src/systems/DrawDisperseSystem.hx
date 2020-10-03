@@ -8,6 +8,7 @@ import ecs.Entity;
 import event.MessageCentre;
 import Enums;
 import logging.Logging;
+import Camera;
 
 class DrawDisperseSystem extends System implements ISystem
 {
@@ -70,7 +71,7 @@ class DrawDisperseSystem extends System implements ISystem
 			for ( y in 0...yp ){
 				for ( x in 0...xp ) {
 					var bmp = comp.drawables[x][y];
-					var xpos = pos.x + ((x - (xp/2))* ps * comp.disperse );
+					var xpos = (pos.x - Camera.position) + ((x - (xp/2))* ps * comp.disperse );
 					var ypos = pos.y + ((y - (yp/2)) * ps * comp.disperse );
 					bmp.setPosition(xpos,ypos);
 				}

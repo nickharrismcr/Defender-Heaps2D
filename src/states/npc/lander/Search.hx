@@ -10,6 +10,7 @@ import components.update.TimerComponent;
 import logging.Logging;
 import Enums;
 import event.MessageCentre;
+import Planet;
 
 class Search implements IState
 {
@@ -20,26 +21,31 @@ class Search implements IState
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
 		e.addComponent(new ShootableComponent());
+		var pc:PosComponent = cast e.get(Pos);
+		pc.dx=Std.random(200);
+		if ( Std.random(2)==1) pc.dx = -pc.dx;
+		pc.dy=80;
 	}
 
 
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
-		var pc = e.get(Pos);
+		var pc:PosComponent = cast e.get(Pos);
 		pc.x=pc.x+pc.dx*dt;
 		pc.y=pc.y+pc.dy*dt;
-		if ( pc.x < 0 || pc.x > e.engine.app.s2d.width )
+
+		var m = e.engine.game.mountainAt(Std.int(pc.x)); 
+		var wh = e.engine.app.s2d.height;
+
+		if ( pc.y > wh - ( m + 100 ))
 		{
-			pc.dx=-pc.dx;
+			pc.dy = -50; 
 		}
-		if ( pc.y < 0 || pc.y > e.engine.app.s2d.height )
+		if ( pc.y < wh - ( m + 100 ))
 		{
-			pc.dy=-pc.dy;
+			pc.dy = 50;
 		}
 
-		
-		
-		 
 	}
 
 	public function exit(c:FSMComponent,e:Entity,dt:Float)

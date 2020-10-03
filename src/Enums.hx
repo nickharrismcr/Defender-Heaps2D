@@ -17,6 +17,7 @@ enum ComponentType
     Deadly;
     Shootable;
     Collide;
+    Human;
 }
 
 enum SystemType 
@@ -28,6 +29,7 @@ enum SystemType
     StarSystem;
     BulletSystem;
     CollideSystem;
+    PosSystem;
 }
 
 enum States 

@@ -5,6 +5,7 @@ import ecs.Filter;
 import ecs.Entity;
 import event.MessageCentre;
 import Enums;
+import Camera;
 import logging.Logging;
 import components.update.PosComponent;
 import components.update.StarComponent;
@@ -43,12 +44,12 @@ class StarSystem extends System implements ISystem
 			var s:StarComponent = cast e.get(Star);
 			var p:PosComponent = cast e.get(Pos);
 
-			p.x+=100*dt;
-			s.bmp.setPosition(p.x,p.y);
+
+			s.bmp.setPosition(p.x-Camera.position/4,p.y);
 			 
 			if ( t.t > t.mark) {
 				t.mark = t.t + 1 + hxd.Math.random(3);
-				p.x = Std.random(scene.width); 
+				p.x = Std.random(Std.int(scene.width))+Camera.position/4; 
 				p.y = Std.random(Std.int(scene.height*0.75));
 				s.col = Utils.rand_col();
 				s.bmp.setPosition(p.x,p.y);

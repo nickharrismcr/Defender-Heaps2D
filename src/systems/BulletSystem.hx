@@ -62,7 +62,7 @@ class BulletSystem extends System implements ISystem
 			for ( other in this.engine.getEntitiesWithComponent(Shootable))
 			{
 				var od:DrawComponent = cast other.get(Draw);
-				if ( od.drawable.getBounds().intersects(bd.drawable.getBounds()))
+ 				if ( od.drawable.getBounds().intersects(bd.drawable.getBounds()))
 				{
 					this.engine.removeEntity(e);
 					MessageCentre.notify(new KilledEvent(other));
@@ -70,7 +70,7 @@ class BulletSystem extends System implements ISystem
 			}
 
 			var t:TimerComponent = cast e.get(Timer);
-			if ( t.t > 2 ){
+			if ( t.t > 4 ){
 				e.engine.removeEntity(e);
 			}
 		}

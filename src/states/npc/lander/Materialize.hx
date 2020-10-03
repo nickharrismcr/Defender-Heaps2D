@@ -21,13 +21,9 @@ class Materialize implements IState
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
 		var pc:PosComponent = cast e.get(Pos);
-		if (pc.x==0){
-			pc.x=Std.random(e.engine.app.s2d.width)/2;
-			pc.y=Std.random(e.engine.app.s2d.height)/2;
-			Logging.trace('${e.id},${pc.x},${pc.y}');
-		}
-		pc.dx=Std.random(200)-100;
-		pc.dy=Std.random(200)-100;
+		pc.x=Std.random(e.engine.app.s2d.width)+Camera.position;
+		pc.y=Std.random(e.engine.app.s2d.height)/2;
+	
 		var ddc = new DrawDisperseComponent(GFX.getDisperse(Lander));
 		ddc.disperse = 120;	
 		e.addComponent(ddc);	 
@@ -46,6 +42,7 @@ class Materialize implements IState
 	}
 	public function exit(c:FSMComponent,e:Entity,dt:Float)
 	{
+		 
 		e.removeComponent(DrawDisperse);
 		e.addComponent(new DrawComponent(GFX.getAnim(Lander)));	
 	}

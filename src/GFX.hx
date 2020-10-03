@@ -47,7 +47,7 @@ class GFX
         for ( k in Reflect.fields(Config.graphics))
         {
             var v = Reflect.getProperty(Config.graphics,k);
-            GFX.load(v.png , v.frames, v.xpixels, v.ypixels, v.speed );
+            GFX.load(v.png , v.frames, v.xpixels, v.ypixels, v.anim_rate );
         }
     }
 

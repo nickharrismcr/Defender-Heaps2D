@@ -9,6 +9,7 @@ import ecs.Entity;
 import event.MessageCentre;
 import Enums;
 import logging.Logging;
+import Camera;
 
 class DrawSystem extends System implements ISystem
 {
@@ -38,11 +39,20 @@ class DrawSystem extends System implements ISystem
 
 	public override function update(dt:Float)
 	{
+		var sw = this.engine.app.s2d.width;
+		var ww = Config.settings.world_width;
+
 		for ( e in this.targets )
 		{
 			var p:PosComponent = cast e.get(Pos);
 			var d:DrawComponent = cast e.get(Draw);
-			d.drawable.setPosition(p.x,p.y);
+			var posx=p.x;
+			if ( Camera.position < sw && p.x > ww - sw )
+				posx=posx-ww;
+			if ( Camera.position > ww - sw && p.x <  sw )
+				posx=posx+ww;
+
+			d.drawable.setPosition(posx-Camera.position,p.y);
 		}
 	}
 
