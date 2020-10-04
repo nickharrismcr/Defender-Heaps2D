@@ -1,7 +1,7 @@
 package fsm;
 
 import ecs.IComponent;
-import Enums;
+
 
 class FSMComponent implements IComponent
 {

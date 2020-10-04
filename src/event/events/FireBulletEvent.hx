@@ -1,10 +1,9 @@
 package event.events;
 
 import components.update.PosComponent;
-import event.MessageCentre;
+ 
 import ecs.Entity;
-import Enums;
-
+ 
 class FireBulletEvent implements IEvent
 {
 	public var type:EventType = FireBullet;

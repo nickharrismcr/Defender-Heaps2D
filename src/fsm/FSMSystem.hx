@@ -2,7 +2,7 @@ package fsm;
 
 import ecs.Filter;
 import ecs.System;
-import Enums;
+
 import ecs.Entity;
 import fsm.StateTree;
 

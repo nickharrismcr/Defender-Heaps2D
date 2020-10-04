@@ -5,8 +5,8 @@ import components.draw.DrawComponent;
 import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
-import Enums;
-import event.MessageCentre;
+
+
 import event.events.FireBulletEvent;
 
 class Walk implements IState
@@ -20,7 +20,7 @@ class Walk implements IState
 		e.addComponent(new DrawComponent(GFX.getAnim(Human)));	
 		var pc:PosComponent = cast e.get(Pos);
 		pc.x=Std.random(Std.int(Config.settings.world_width));
-		pc.y=e.engine.app.s2d.height - e.engine.game.mountainAt(Std.int(pc.x)) ;
+		pc.y=e.engine.game.s2d.height - e.engine.game.mountainAt(Std.int(pc.x)) ;
 		pc.dy=0;
 		pc.dx=0;
 	}

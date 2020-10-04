@@ -5,9 +5,9 @@ import components.update.PosComponent;
 import ecs.System;
 import ecs.Filter;
 import ecs.Entity;
-import event.MessageCentre;
-import Enums;
-import logging.Logging;
+
+
+
 import Camera;
 
 class DrawDisperseSystem extends System implements ISystem
@@ -37,7 +37,7 @@ class DrawDisperseSystem extends System implements ISystem
 				var ypos = pos.y + ((y - (yp/2)) * ps * comp.disperse );
 				bmp.setPosition(xpos,ypos);
 				bmp.setScale(1.5);
-				this.engine.app.s2d.addChild(bmp);
+				this.engine.game.s2d.addChild(bmp);
 			}
 		}
 	}
@@ -53,7 +53,7 @@ class DrawDisperseSystem extends System implements ISystem
 		for ( y in 0...yp ){
 			for ( x in 0...xp ) {
 				var bmp = comp.drawables[x][y];
-				this.engine.app.s2d.removeChild(bmp);
+				this.engine.game.s2d.removeChild(bmp);
 			}
 		}
 	}

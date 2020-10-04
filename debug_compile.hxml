@@ -1,11 +1,12 @@
---verbose
-
 # class paths
 -cp src
 
 # libs
 -lib heaps
 -lib hlsdl
+
+# flags
+-D debug
 
 # entry point
 -main Main

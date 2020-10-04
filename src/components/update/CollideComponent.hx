@@ -1,14 +1,12 @@
 package components.update;
 
 import ecs.IComponent;
-import Enums;
 
+
+////@:build(macros.ComponentEnumMacro.build()) 
 class CollideComponent implements IComponent
 {
-    public var type:ComponentType;
-    
+    public var type = Collide;
     public function new( )
-    {
-        type=Collide;
-    }    
+    {}    
 }

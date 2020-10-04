@@ -1,13 +1,12 @@
 package components.update;
 
 import ecs.IComponent;
-import Enums;
 
+
+//@:build(macros.ComponentEnumMacro.build()) 
 class ShootableComponent implements IComponent
 {
-    public var type:ComponentType;
+    public var type = Shootable;
     public function new()
-    {
-        type=Shootable;
-    }    
+    {}    
 }

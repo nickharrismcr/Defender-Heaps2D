@@ -3,12 +3,14 @@ package components.draw;
 import h2d.Bitmap;
 import ecs.IComponent;
 import GFX;
-import Enums;
 
+ 
+ 
 
+////@:build(macros.ComponentEnumMacro.build())   
 class DrawDisperseComponent implements IComponent
 {
-    public var type:ComponentType;
+    public var type = DrawDisperse;
     public var tiles:DisperseTiles;
     public var drawables:Array<Array<h2d.Bitmap>>;
     public var disperse:Float;
@@ -17,7 +19,6 @@ class DrawDisperseComponent implements IComponent
     {
         this.tiles=tiles;
         this.drawables=tiles.getBitmaps();
-        this.type=DrawDisperse;
         this.disperse=1;
     }    
 }

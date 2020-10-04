@@ -6,8 +6,8 @@ import components.update.PosComponent;
 import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
-import logging.Logging;
-import Enums;
+
+
 import components.update.TimerComponent;
 import components.draw.DrawDisperseComponent;
 
@@ -24,8 +24,8 @@ class Materialize implements IState
 		e.addComponent(ddc);
 		var pc:PosComponent = cast e.get(Pos);
 		if (pc.x==0){
-			pc.x=Std.random(e.engine.app.s2d.width)+Camera.position;
-			pc.y=Std.random(e.engine.app.s2d.height)/2;
+			pc.x=Std.random(e.engine.game.s2d.width)+Camera.position;
+			pc.y=Std.random(e.engine.game.s2d.height)/2;
 			Logging.trace('${e.id},${pc.x},${pc.y}');
 		}
 	

@@ -1,15 +1,11 @@
 package states.npc.lander;
 
-import components.update.ShootableComponent;
-import event.events.FireBulletEvent;
+import components.update.HumanComponent;
+import components.update.HumanFinderComponent;
 import components.update.PosComponent;
 import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
-import components.update.TimerComponent;
-import logging.Logging;
-import Enums;
-import event.MessageCentre;
 import Planet;
 
 class Pounce implements IState
@@ -29,11 +25,24 @@ class Pounce implements IState
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
 		var pc:PosComponent = cast e.get(Pos);
-		pc.x=pc.x+pc.dx*dt;
-		pc.y=pc.y+pc.dy*dt;
+		pc.y=pc.y+pc.dy* Config.settings.grab_speed * dt;
+
+		var fc:HumanFinderComponent = cast e.get(HumanFinder);
+		var te = e.engine.getEntity(fc.target_id); 
+		if ( te == null ) {
+			fc.target_id = null;
+			c.next_state = Lander(Search);
+			return;
+		} else {
+			var tc:PosComponent = cast te.get(Pos);
+			if ( pc.y > tc.y - 30 )
+			{
+				c.next_state = Lander(Kidnap);
+			}
+		}
 
 		var m = e.engine.game.mountainAt(Std.int(pc.x)); 
-		var wh = e.engine.app.s2d.height;
+		var wh = e.engine.game.s2d.height;
 
 		if ( pc.y > wh - ( m + 100 ))
 		{

@@ -1,5 +1,4 @@
 
-import haxe.display.Display.KeywordKind;
 import states.npc.baiter.Materialize;
 import states.npc.baiter.Chase;
 import states.npc.baiter.Die;
@@ -12,8 +11,6 @@ import components.update.ShootableComponent;
 import components.update.StarComponent;
 import components.update.TimerComponent;
 import components.update.PosComponent;
-import components.draw.DrawDisperseComponent;
-import components.draw.DrawComponent;
 import components.update.HumanComponent;
 import components.update.HumanFinderComponent;
 
@@ -34,14 +31,12 @@ import systems.PosSystem;
 import GFX;
 import Planet;
 import Camera;
-import event.MessageCentre;
-import logging.Logging;
-
-class Game
+ 
+class Game extends hxd.App
 {
     public static var camera_pos:Float;
 
-    var engine:Engine;
+    var ecs:ecs.Engine;
     var app:hxd.App;
     var graphics:GFX;
     var planet:Planet;
@@ -49,25 +44,29 @@ class Game
     var landers_killed:Int=0;
     var tf:h2d.Text;
 
-    public function new(app:hxd.App)
+    public function new()
+    {
+        super();
+    }
+
+    public override function init()
     {
         Camera.position = Config.settings.world_width/2;
 
-        this.app=app;
-        this.engine=new Engine(app,this);
+        this.ecs=new ecs.Engine(this);
 
         var draw_sys = new DrawSystem();
-        this.engine.addDrawSystem(draw_sys);
+        this.ecs.addDrawSystem(draw_sys);
         var dispdraw_sys = new DrawDisperseSystem();
-        this.engine.addDrawSystem(dispdraw_sys);
+        this.ecs.addDrawSystem(dispdraw_sys);
         var timer_sys = new TimerSystem();
-        this.engine.addUpdateSystem(timer_sys);
-        var star_sys = new StarSystem(this.app.s2d);
-        this.engine.addUpdateSystem(star_sys);
+        this.ecs.addUpdateSystem(timer_sys);
+        var star_sys = new StarSystem(s2d);
+        this.ecs.addUpdateSystem(star_sys);
         var bullet_sys = new BulletSystem();
-        this.engine.addUpdateSystem(bullet_sys);
+        this.ecs.addUpdateSystem(bullet_sys);
         var pos_sys = new PosSystem();
-        this.engine.addUpdateSystem(pos_sys);
+        this.ecs.addUpdateSystem(pos_sys);
 
         var fsm_sys = new FSMSystem();
         // register a state object with the fcm system
@@ -106,24 +105,24 @@ class Game
         stree.addTransition(Human(Falling),Human(Die));
         
         fsm_sys.setStateTree(stree);
-        this.engine.addUpdateSystem(fsm_sys);
+        this.ecs.addUpdateSystem(fsm_sys);
        
         MessageCentre.register(FireBullet,bullet_sys.fireEvent);
         MessageCentre.register(Killed,this.kill);
        
         GFX.init();
-        this.planet=new Planet(this.app.s2d);
+        this.planet=new Planet(s2d);
 
-        var f=this.instantiate_baiters(1);
-        this.engine.schedule(4,f);
+        //var f=this.instantiate_baiters(1);
+        //this.ecs.schedule(4,f);
         this.landers+=20;
         var f=this.instantiate_landers(this.landers);
-        this.engine.schedule(1,f);
+        this.ecs.schedule(1,f);
         var f=this.instantiate_humans(20 );
-        this.engine.schedule(1,f);
+        this.ecs.schedule(1,f);
 
         var f=this.instantiate_stars(50);
-        this.engine.schedule(0.1,f);
+        this.ecs.schedule(0.1,f);
 
         var font : h2d.Font = hxd.res.DefaultFont.get();
         this.tf = new h2d.Text(font);
@@ -131,7 +130,7 @@ class Game
         this.tf.textAlign = Center;
         this.tf.setPosition(100,100);
  
-        this.app.s2d.addChild(this.tf);
+        s2d.addChild(this.tf);
     }
 
     public function mountainAt(pos:Int):Int
@@ -139,11 +138,11 @@ class Game
         return this.planet.at(pos);
     }
 
-    public function update(dt:Float)
+    public override function update(dt:Float)
     {
         if (this.planet != null) this.planet.draw( );
-        this.engine.update(dt);
-        this.engine.draw (dt);
+        this.ecs.update(dt);
+        this.ecs.draw (dt);
         Camera.update();
         this.debug_update(dt);
         
@@ -153,7 +152,7 @@ class Game
         
         // move to game state 
         if (this.landers_killed == this.landers || hxd.Key.isPressed(hxd.Key.SPACE) ) 
-            this.engine.schedule(2,() -> hxd.System.exit());
+            this.ecs.schedule(2,() -> hxd.System.exit());
     }
 
     private function debug_update(dt:Float)
@@ -192,7 +191,7 @@ class Game
                 e.addComponent(tc);
                 var cc = new CollideComponent();
                 e.addComponent(cc);
-                this.engine.addEntity(e);
+                this.ecs.addEntity(e);
             }
         } ;
     }
@@ -214,7 +213,7 @@ class Game
                 e.addComponent(cc);
                 var hc = new HumanFinderComponent();
                 e.addComponent(hc);
-                this.engine.addEntity(e);
+                this.ecs.addEntity(e);
             }
         } ;
     }
@@ -230,7 +229,7 @@ class Game
                 e.addComponent(s);
                 e.addComponent(p);
                 e.addComponent(t);
-                this.engine.addEntity(e);
+                this.ecs.addEntity(e);
             }
         };
     }
@@ -254,11 +253,8 @@ class Game
                 e.addComponent(sc);
                 var hc = new HumanComponent();
                 e.addComponent(hc);
-                this.engine.addEntity(e);
+                this.ecs.addEntity(e);
             }
         } ;
-    }
-
-        
-    
+    }     
 }

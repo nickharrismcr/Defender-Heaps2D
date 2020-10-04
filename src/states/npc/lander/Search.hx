@@ -9,9 +9,9 @@ import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
 
-import logging.Logging;
-import Enums;
-import event.MessageCentre;
+
+
+
 import Planet;
 
 class Search implements IState
@@ -39,25 +39,29 @@ class Search implements IState
 		pc.y=pc.y+pc.dy*dt;
 
 		var m = e.engine.game.mountainAt(Std.int(pc.x)); 
-		var wh = e.engine.app.s2d.height;
+		var wh = e.engine.game.s2d.height;
 
-		if ( pc.y > wh - ( m + 100 ))
+		if ( pc.y > wh - ( m + 200 ))
 		{
 			pc.dy = -50; 
 		}
-		if ( pc.y < wh - ( m + 100 ))
+		if ( pc.y < wh - ( m + 200 ))
 		{
 			pc.dy = 50;
 		}
 		var fc:HumanFinderComponent = cast e.get(HumanFinder);
-		if ( fc.target_id == null){
-			if ( e.engine.getEntity(fc.target_id) == null ) this.find_human(e,fc);
+		if (( fc.target_id == null) || ( e.engine.getEntity(fc.target_id) == null )) {
+			this.find_human(e,fc);
 		}
-		var te = e.engine.getEntity(fc.target_id);
-		var tp:PosComponent = cast te.get(Pos);
-		if ( Math.abs(tp.x - pc.x ) < 30 ){
-			c.next_state = Lander(Pounce);
+		if ( fc.target_id != null) {
+
+			var te = e.engine.getEntity(fc.target_id);
+			var tp:PosComponent = cast te.get(Pos);
+			if ( Math.abs(tp.x - pc.x ) < 10 ){
+				c.next_state = Lander(Pounce);
+			}
 		}
+		
 	}
 
 	public function exit(c:FSMComponent,e:Entity,dt:Float)
@@ -67,13 +71,15 @@ class Search implements IState
 
 	private function find_human(e:Entity,fc:HumanFinderComponent)
 	{
- 
+		fc.target_id = null;
+		Logging.trace('Lander ${e.id} search find human');
 		for ( he in e.engine.getEntitiesWithComponent(Human) ) 
 		{
 			var hc:HumanComponent = cast he.get(Human);
 			if ( hc.lander == null ){
 				hc.lander = e.id;
 				fc.target_id = he.id;
+				Logging.trace('Lander ${e.id} search found human ${he.id}');
 				break;
 			}
 		}

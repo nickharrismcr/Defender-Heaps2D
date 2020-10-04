@@ -1,13 +1,12 @@
 package components.update;
 
 import ecs.IComponent;
-import Enums;
 
+
+//@:build(macros.ComponentEnumMacro.build()) 
 class DeadlyComponent implements IComponent
-{
-    public var type:ComponentType;
+{ 
+    public var type = Deadly;
     public function new()
-    {
-        type=Deadly;
-    }    
+    {}    
 }

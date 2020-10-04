@@ -17,6 +17,18 @@
 			"label": "haxe: compile.hxml"
 		},
 		{
+			"type": "hxml",
+			"file": "debug_compile.hxml",
+			"problemMatcher": [
+				"$haxe-absolute",
+				"$haxe",
+				"$haxe-error",
+				"$haxe-trace"
+			],
+			"group": "build",
+			"label": "haxe: debug compile.hxml"
+		},
+		{
 			"type": "haxe",
 			"args": "active configuration",
 			"problemMatcher": [

@@ -57,7 +57,7 @@ class Logger {
 
 class Logging {
 
-	static var logger:Logger;
+	public static final logger = new Logger();
 	public static var level:Levels=TRACE;
 
 	public static function levelString(level:Levels):String
@@ -72,34 +72,36 @@ class Logging {
 		}
 		return "";
 	}
-	public static function get():Logger
+	
+	public static inline function trace(s:String,?pos:haxe.PosInfos)
 	{
-		if (Logging.logger==null)
-		{
-			Logging.logger=new Logger();
-		}
-		return Logging.logger;
+		#if debug
+		Logging.logger.trace(s,pos);
+		#end
 	}
-
-	public static function trace(s:String,?pos:haxe.PosInfos)
+	public static inline function debug(s:String,?pos:haxe.PosInfos)
 	{
-		Logging.get().trace(s,pos);
+		#if debug
+		Logging.logger.debug(s,pos);
+		#end
 	}
-	public static function debug(s:String,?pos:haxe.PosInfos)
+	public static inline function info(s:String,?pos:haxe.PosInfos)
 	{
-		Logging.get().debug(s,pos);
+		#if debug
+		Logging.logger.info(s,pos);
+		#end
 	}
-	public static function info(s:String,?pos:haxe.PosInfos)
+	public static inline function warning(s:String,?pos:haxe.PosInfos)
 	{
-		Logging.get().info(s,pos);
+		#if debug
+		Logging.logger.warning(s,pos);
+		#end
 	}
-	public static function warning(s:String,?pos:haxe.PosInfos)
+	public static inline function error(s:String,?pos:haxe.PosInfos)
 	{
-		Logging.get().warning(s,pos);
-	}
-	public static function error(s:String,?pos:haxe.PosInfos)
-	{
-		Logging.get().error(s,pos);
+		#if debug
+		Logging.logger.error(s,pos);
+		#end
 	}
 }
 

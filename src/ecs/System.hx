@@ -3,8 +3,8 @@ package ecs;
 import ecs.Entity;
 import ecs.Engine;
 import ecs.IComponent;
-import Enums;
-import logging.Logging;
+
+
 
 interface ISystem { 
 

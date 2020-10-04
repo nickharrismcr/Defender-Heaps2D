@@ -1,6 +1,6 @@
-import Enums;
+ 
 import Camera;
-import Config;
+ 
 import h2d.Scene;
 
 class Planet

@@ -5,9 +5,9 @@ import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
 import components.update.TimerComponent;
-import logging.Logging;
-import Enums;
-import event.MessageCentre;
+
+
+
 import event.events.FireBulletEvent;
 
 class Chase implements IState
@@ -39,7 +39,7 @@ class Chase implements IState
 			{
 				if ( oe.id != e.id ){
 					var opc:PosComponent = cast oe.get(Pos);
-					if ( Math.abs(pc.x-opc.x ) < e.engine.app.s2d.width ) { 
+					if ( Math.abs(pc.x-opc.x ) < e.engine.game.s2d.width ) { 
 						MessageCentre.notify(new FireBulletEvent(e,pc,opc ));
 					}
 					pc.dx = 800 * ( pc.x > opc.x ? -1 : 1) ;

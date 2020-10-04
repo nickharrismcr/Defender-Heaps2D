@@ -5,8 +5,8 @@ package states.npc.lander;
 import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
-import logging.Logging;
-import Enums;
+
+
 import components.update.TimerComponent;
 import components.update.PosComponent;
 import components.draw.DrawComponent;
@@ -21,8 +21,8 @@ class Materialize implements IState
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
 		var pc:PosComponent = cast e.get(Pos);
-		pc.x=Std.random(e.engine.app.s2d.width)+Camera.position;
-		pc.y=Std.random(e.engine.app.s2d.height)/2;
+		pc.x=Std.random(e.engine.game.s2d.width)+Camera.position;
+		pc.y=Std.random(e.engine.game.s2d.height)/2;
 	
 		var ddc = new DrawDisperseComponent(GFX.getDisperse(Lander));
 		ddc.disperse = 120;	

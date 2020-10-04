@@ -6,9 +6,9 @@ import components.draw.DrawComponent;
 import ecs.System;
 import ecs.Filter;
 import ecs.Entity;
-import event.MessageCentre;
-import Enums;
-import logging.Logging;
+
+
+
 import Camera;
 
 class DrawSystem extends System implements ISystem
@@ -26,7 +26,7 @@ class DrawSystem extends System implements ISystem
 	public override function onAddEntity(e:Entity)
 	{
 		var dr:DrawComponent = cast e.get(Draw);
-		this.engine.app.s2d.addChild(dr.drawable);
+		this.engine.game.s2d.addChild(dr.drawable);
 		Logging.trace('Draw system onAddEntity $e add child at ${dr.drawable.x},${dr.drawable.y}');
 	}
 
@@ -34,12 +34,12 @@ class DrawSystem extends System implements ISystem
 	{
         Logging.trace('Draw system onRemoveEntity $e');
 		var dr:DrawComponent = cast e.get(Draw);
-		this.engine.app.s2d.removeChild(dr.drawable);
+		this.engine.game.s2d.removeChild(dr.drawable);
 	}
 
 	public override function update(dt:Float)
 	{
-		var sw = this.engine.app.s2d.width;
+		var sw = this.engine.game.s2d.width;
 		var ww = Config.settings.world_width;
 
 		for ( e in this.targets )

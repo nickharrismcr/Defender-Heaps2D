@@ -1,19 +1,19 @@
 package components.update;
 
 import ecs.IComponent;
-import Enums;
+ 
 
+//@:build(macros.ComponentEnumMacro.build()) 
 class PosComponent implements IComponent
 {
-    public var type:ComponentType;
+    public var type = Pos;
     public var x:Float;
     public var y:Float;
     public var dx:Float;
     public var dy:Float;
 
     public function new()
-    {
-        type=Pos;
+    { 
         x=0;
         y=0;
         dx=Std.random(100)-100;

@@ -1,4 +1,4 @@
-import logging.Logging;
+ 
 import components.update.CollideComponent;
 import components.update.PosComponent;
 

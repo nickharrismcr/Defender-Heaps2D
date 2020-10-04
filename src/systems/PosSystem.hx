@@ -5,9 +5,9 @@ import components.update.PosComponent;
 import ecs.System;
 import ecs.Filter;
 import ecs.Entity;
-import Config;
+
  
-import Enums;
+
  
 
 class PosSystem extends System implements ISystem

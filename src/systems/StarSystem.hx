@@ -3,10 +3,10 @@ package systems;
 import ecs.System;
 import ecs.Filter;
 import ecs.Entity;
-import event.MessageCentre;
-import Enums;
+
+
 import Camera;
-import logging.Logging;
+
 import components.update.PosComponent;
 import components.update.StarComponent;
 import components.update.TimerComponent;
@@ -31,7 +31,7 @@ class StarSystem extends System implements ISystem
 	{	
 		var dr:StarComponent = cast e.get(Star);
 		dr.bmp = new h2d.Bitmap(this.tile);
-		this.engine.app.s2d.addChild(dr.bmp);
+		this.engine.game.s2d.addChild(dr.bmp);
 		Logging.trace('Star Draw system onAddEntity ${e.id}');
 
 	}

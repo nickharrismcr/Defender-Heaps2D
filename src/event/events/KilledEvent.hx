@@ -1,8 +1,7 @@
 package event.events;
 
 import ecs.Entity;
-import event.MessageCentre;
-import Enums;
+ 
 
 class KilledEvent implements IEvent
 {

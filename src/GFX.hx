@@ -1,7 +1,6 @@
 import h2d.Anim;
 import h2d.Tile;
-import Enums;
-import Config;
+ 
 
 class DisperseTiles
 {

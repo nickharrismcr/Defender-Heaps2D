@@ -1,7 +1,7 @@
 package ecs;
 
 import ecs.IComponent;
-import Enums;
+
 
 @:forward
 abstract Components(Array<ComponentType>) from Array<ComponentType> to Array<ComponentType>

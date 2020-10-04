@@ -3,14 +3,14 @@ package ecs;
 import haxe.io.Encoding;
 import ecs.System;
 import ecs.IComponent;
-import logging.Logging;
-import Enums;
+
+
 import ecs.Job;
 import Game;
 
 class Engine
 {
-	public var app:hxd.App;
+ 
 	public var game:Game;
 	
 	private var systems:Map<SystemType,System>;
@@ -21,9 +21,9 @@ class Engine
 	private var ents_with_comp:Map<ComponentType,Array<Entity>>;
 	private var entity_list:Map<Int,Entity>;
 
-	public function new(app:hxd.App,game:Game)
+	public function new( game:Game)
 	{
-		this.app=app;
+ 
 		this.game=game;
 		this.systems = new Map<SystemType,System>();
 		this.update_systems=new Map<SystemType,System>();

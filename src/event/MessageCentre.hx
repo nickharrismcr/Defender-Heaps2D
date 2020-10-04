@@ -1,6 +1,6 @@
 package event;
 
-import Enums;
+
 import ecs.Entity;
 
 interface IEvent

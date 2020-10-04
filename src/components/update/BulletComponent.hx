@@ -1,13 +1,12 @@
 package components.update;
 
-import ecs.IComponent;
-import Enums;
 
+import ecs.IComponent;
+
+////@:build(macros.ComponentEnumMacro.build())  
 class BulletComponent implements IComponent
 {
-    public var type:ComponentType;
+    public var type = Bullet;
     public function new()
-    {
-        type=Bullet;
-    }    
+    {}    
 }
