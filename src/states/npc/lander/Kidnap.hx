@@ -28,13 +28,11 @@ class Kidnap implements IState
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
 		var pc:PosComponent = cast e.get(Pos);
-		pc.x=pc.x+pc.dx*dt;
 		pc.y=pc.y+pc.dy*dt;
 
 		if ( pc.y < 200 ){
 			c.next_state = Lander(Mutant);
 		}
-		 
 	}
 
 	public function exit(c:FSMComponent,e:Entity,dt:Float)

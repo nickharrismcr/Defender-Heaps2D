@@ -1,5 +1,6 @@
 package systems;
 
+import fsm.FSMComponent;
 import h2d.Drawable;
 import components.update.PosComponent;
 import components.draw.DrawComponent;
@@ -27,6 +28,9 @@ class DrawSystem extends System implements ISystem
 	{
 		var dr:DrawComponent = cast e.get(Draw);
 		this.engine.game.s2d.addChild(dr.drawable);
+		#if debug
+		this.engine.game.s2d.addChild(dr.text);
+		#end
 		Logging.trace('Draw system onAddEntity $e add child at ${dr.drawable.x},${dr.drawable.y}');
 	}
 
@@ -35,6 +39,9 @@ class DrawSystem extends System implements ISystem
         Logging.trace('Draw system onRemoveEntity $e');
 		var dr:DrawComponent = cast e.get(Draw);
 		this.engine.game.s2d.removeChild(dr.drawable);
+		#if debug
+		this.engine.game.s2d.removeChild(dr.text);
+		#end
 	}
 
 	public override function update(dt:Float)
@@ -53,6 +60,15 @@ class DrawSystem extends System implements ISystem
 				posx=posx+ww;
 
 			d.drawable.setPosition(posx-Camera.position,p.y);
+			#if debug
+			var c:FSMComponent = cast e.get(FSM);
+			if ( c != null ){
+				d.text.text = '${e.id} ${c.state}';
+				d.text.textAlign = Center;
+				d.text.setPosition( 40 + posx - Camera.position, 50 + p.y);
+			}
+			
+			#end  
 		}
 	}
 

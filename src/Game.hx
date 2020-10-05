@@ -1,4 +1,3 @@
-
 import states.npc.baiter.Materialize;
 import states.npc.baiter.Chase;
 import states.npc.baiter.Die;
@@ -31,6 +30,8 @@ import systems.PosSystem;
 import GFX;
 import Planet;
 import Camera;
+
+import hxd.Window.DisplayMode;
  
 class Game extends hxd.App
 {
@@ -45,12 +46,19 @@ class Game extends hxd.App
     var tf:h2d.Text;
 
     public function new()
-    {
+    { 
         super();
+        
     }
 
     public override function init()
     {
+        var win=hxd.Window.getInstance();
+        #if !debug
+        win.displayMode = Fullscreen;
+        Logging.level = ERROR;
+        #end
+		
         Camera.position = Config.settings.world_width/2;
 
         this.ecs=new ecs.Engine(this);
@@ -81,6 +89,7 @@ class Game extends hxd.App
         fsm_sys.register(new states.npc.lander.Die());
         fsm_sys.register(new states.npc.human.Walk());
         fsm_sys.register(new states.npc.human.Grabbed());
+        fsm_sys.register(new states.npc.human.Falling());
         fsm_sys.register(new states.npc.human.Die());
         var stree = new StateTree();
         
@@ -101,8 +110,9 @@ class Game extends hxd.App
         stree.addTransition(Human(Walk),Human(Die));
         stree.addTransition(Human(Walk),Human(Grabbed));
         stree.addTransition(Human(Grabbed),Human(Die));
-        stree.addTransition(Human(Walk),Human(Falling));
+        stree.addTransition(Human(Grabbed),Human(Falling));
         stree.addTransition(Human(Falling),Human(Die));
+        stree.addTransition(Human(Falling),Human(Walk));
         
         fsm_sys.setStateTree(stree);
         this.ecs.addUpdateSystem(fsm_sys);
@@ -113,8 +123,8 @@ class Game extends hxd.App
         GFX.init();
         this.planet=new Planet(s2d);
 
-        //var f=this.instantiate_baiters(1);
-        //this.ecs.schedule(4,f);
+        var f=this.instantiate_baiters(1);
+        this.ecs.schedule(4,f);
         this.landers+=20;
         var f=this.instantiate_landers(this.landers);
         this.ecs.schedule(1,f);
@@ -147,8 +157,8 @@ class Game extends hxd.App
         this.debug_update(dt);
         
         // move to player state  
-        if ( hxd.Key.isDown(hxd.Key.LEFT)) Camera.position -= 500*dt;
-        if ( hxd.Key.isDown(hxd.Key.RIGHT)) Camera.position += 500*dt;
+        if ( hxd.Key.isDown(hxd.Key.LEFT)) Camera.position -= 1500*dt;
+        if ( hxd.Key.isDown(hxd.Key.RIGHT)) Camera.position += 1500*dt;
         
         // move to game state 
         if (this.landers_killed == this.landers || hxd.Key.isPressed(hxd.Key.SPACE) ) 
@@ -249,8 +259,8 @@ class Game extends hxd.App
                 e.addComponent(tc);
                 var cc = new CollideComponent();
                 e.addComponent(cc);
-                var sc = new ShootableComponent();
-                e.addComponent(sc);
+                //var sc = new ShootableComponent();
+                //e.addComponent(sc);
                 var hc = new HumanComponent();
                 e.addComponent(hc);
                 this.ecs.addEntity(e);

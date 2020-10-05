@@ -1,6 +1,7 @@
 package ecs;
 
 
+import haxe.Exception;
 import ecs.IComponent;
 
 
@@ -60,6 +61,9 @@ class Entity {
 
 	public function removeComponent(c:ComponentType):Void
 	{
+		if ( ! this.components.exists(c)){
+			return;
+		}
 		Logging.trace('Removed component ${c} from Entity ${this.id}');
 		if (this.engine != null ) { 
 			this.engine.removeComponent(this,c);

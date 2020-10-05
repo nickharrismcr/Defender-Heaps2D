@@ -1,6 +1,8 @@
 package states.npc.human;
 
 
+import components.update.HumanComponent;
+import components.update.PosComponent;
 import components.draw.DrawComponent;
 import fsm.IState;
 import ecs.Entity;
@@ -18,23 +20,23 @@ class Grabbed implements IState
 	
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
-		var tc:TimerComponent = cast e.get(Timer);
-		tc.mark = tc.t + 1 + 2 * hxd.Math.random();
-		e.removeComponent(Draw);
-		e.removeComponent(Shootable);
-		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(Human)));		 
+		  
 	}
+
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
-		var tc:TimerComponent = cast e.get(Timer);
-		var dr:DrawDisperseComponent = cast e.get(DrawDisperse);
-		dr.disperse = dr.disperse+dt*60;
-		if ( dr.disperse > 120 ) e.engine.removeEntity(e);
-
+		 var h:HumanComponent = cast e.get(Human);
+		 var pe = e.engine.getEntity(h.lander);
+		 if ( pe == null ){
+			 return;
+		 }
+		 var pp:PosComponent = cast pe.get(Pos);
+		 var p:PosComponent = cast e.get(Pos);
+		 p.y = pp.y+30;
 	}
 	public function exit(c:FSMComponent,e:Entity,dt:Float)
 	{
-		e.removeComponent(DrawDisperse);
+		 
 	}
 }
  

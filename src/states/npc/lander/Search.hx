@@ -57,7 +57,7 @@ class Search implements IState
 
 			var te = e.engine.getEntity(fc.target_id);
 			var tp:PosComponent = cast te.get(Pos);
-			if ( Math.abs(tp.x - pc.x ) < 10 ){
+			if ( Math.abs(tp.x - (pc.x+15) ) < 2 ){
 				c.next_state = Lander(Pounce);
 			}
 		}

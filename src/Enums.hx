@@ -117,6 +117,7 @@ enum BulletStates
 enum abstract PNG(String)
 {
     var Lander = "lander.png";
+    var Mutant = "mutant.png";
     var Baiter = "baiter.png";
     var Bomber = "bomber.png";
     var Swarmer = "swarmer.png";

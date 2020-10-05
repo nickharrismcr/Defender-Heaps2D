@@ -1,5 +1,6 @@
 package states.npc.baiter;
 
+import format.swf.Constants.TagId;
 import components.update.PosComponent;
 import fsm.IState;
 import ecs.Entity;
@@ -20,7 +21,10 @@ class Chase implements IState
 	{
 		var pc:PosComponent = cast e.get(Pos);
 		pc.dx=Std.random(400);
-		pc.dy=Std.random(200)-100;		
+		pc.dy=Std.random(200)-100;	
+		c.scratch=-1;	
+		var tc:TimerComponent = cast e.get(Timer);
+		tc.mark = tc.t + 1;
 	}
 
 
@@ -29,27 +33,41 @@ class Chase implements IState
 		var pc:PosComponent = cast e.get(Pos);
 		pc.x=pc.x+pc.dx*dt;
 		pc.y=pc.y+pc.dy*dt;
-		 
-		 
-		Camera.position += ((pc.x-500)-Camera.position)/100;
-
-		if ( Std.random(80) < 2 ){
-			
+		
+		if ( c.scratch == -1 ){
 			for ( oe in e.engine.getEntitiesWithComponent(Shootable))
 			{
 				if ( oe.id != e.id ){
-					var opc:PosComponent = cast oe.get(Pos);
-					if ( Math.abs(pc.x-opc.x ) < e.engine.game.s2d.width ) { 
-						MessageCentre.notify(new FireBulletEvent(e,pc,opc ));
-					}
-					pc.dx = 800 * ( pc.x > opc.x ? -1 : 1) ;
-					pc.dy = 80 * ( (pc.y > opc.y-300) ? -1 : 1) ;  
+					c.scratch = oe.id;
 					break;
 				}
-				
 			}
 		}
-	 
+		
+		var oe = e.engine.getEntity(c.scratch);
+		if ( oe == null ) {
+			 c.scratch = -1;
+			 return;
+		}
+		var opc:PosComponent = cast oe.get(Pos);
+		if ( Std.random(100) < 3 ){
+			if ( Math.abs(pc.x-opc.x ) < e.engine.game.s2d.width ) { 
+				MessageCentre.notify(new FireBulletEvent(e,pc,opc ));
+			}
+		}
+		
+		var tc:TimerComponent = cast e.get(Timer);
+		if ( tc.t > tc.mark ){
+			
+			pc.dx = 800 * ( pc.x > opc.x ? -1 : 1) ;
+			pc.dy =80 * ( (pc.y > opc.y) ? -1 : 1) ; 
+			tc.mark = tc.t+0.5; 
+			 
+			
+			
+		}
+
+		//Camera.position += ((pc.x-500)-Camera.position)/100;		
 	}
 
 	public function exit(c:FSMComponent,e:Entity,dt:Float)

@@ -1,6 +1,7 @@
 package states.npc.lander;
 
-import components.update.ShootableComponent;
+import components.update.HumanFinderComponent;
+import components.draw.DrawComponent;
 import event.events.FireBulletEvent;
 import components.update.PosComponent;
 import fsm.IState;
@@ -20,7 +21,16 @@ class Mutant implements IState
 	
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
-		 
+		e.removeComponent(Draw);
+		e.addComponent(new DrawComponent(GFX.getAnim(Mutant)));	
+
+		var hfc:HumanFinderComponent = cast e.get(HumanFinder);
+		var he = e.engine.getEntity(hfc.target_id);
+		if ( he != null ) {
+			var hfsm:FSMComponent = cast he.get(FSM);
+			hfsm.next_state = Human(Die);
+		}
+
 	}
 
 

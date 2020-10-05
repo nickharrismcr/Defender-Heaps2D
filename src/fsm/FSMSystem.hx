@@ -52,6 +52,8 @@ class FSMSystem implements ISystem extends System
                 statecls.exit(e_fsm,e,dt);
                 this.stateTree.validTransition(e_fsm.state,e_fsm.next_state);
             }
+            Logging.trace('Entity ${e.id} : ${e_fsm.state} -> ${e_fsm.next_state}');
+            
             statecls=this.getStateClass(e_fsm.next_state);
             statecls.enter(e_fsm,e,dt);
             e_fsm.state = e_fsm.next_state;

@@ -18,14 +18,14 @@ class Pounce implements IState
 	{
 		var pc:PosComponent = cast e.get(Pos);
 		pc.dx = 0;
-		pc.dy = 20;
+		pc.dy = Config.settings.grab_speed;
 	}
 
 
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
 		var pc:PosComponent = cast e.get(Pos);
-		pc.y=pc.y+pc.dy* Config.settings.grab_speed * dt;
+		pc.y = pc.y + pc.dy * dt;
 
 		var fc:HumanFinderComponent = cast e.get(HumanFinder);
 		var te = e.engine.getEntity(fc.target_id); 
@@ -37,22 +37,16 @@ class Pounce implements IState
 			var tc:PosComponent = cast te.get(Pos);
 			if ( pc.y > tc.y - 30 )
 			{
-				c.next_state = Lander(Kidnap);
+				var tf:FSMComponent = cast te.get(FSM); 
+				if ( tf.state.match(Human(Walk))) {
+					tf.next_state = Human(Grabbed);
+					c.next_state = Lander(Kidnap);
+				}else{
+					c.next_state = Lander(Search);
+				}
+				
 			}
 		}
-
-		var m = e.engine.game.mountainAt(Std.int(pc.x)); 
-		var wh = e.engine.game.s2d.height;
-
-		if ( pc.y > wh - ( m + 100 ))
-		{
-			pc.dy = -50; 
-		}
-		if ( pc.y < wh - ( m + 100 ))
-		{
-			pc.dy = 50;
-		}
-
 	}
 
 	public function exit(c:FSMComponent,e:Entity,dt:Float)

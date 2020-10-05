@@ -4,8 +4,8 @@ class Config
 {
     public static var settings = {
         bullet_time:2,
-        world_width:3000,
-        grab_speed:20
+        world_width:5000,
+        grab_speed:80
     }
 
     public static var graphics = {
@@ -15,6 +15,13 @@ class Config
             xpixels : 9,
             ypixels : 8,
             anim_rate : 4
+        },
+        mutant : {
+            png : PNG.Mutant,
+            frames : 6,
+            xpixels : 9,
+            ypixels : 8,
+            anim_rate : 10
         },
         baiter : {
             png : PNG.Baiter,

@@ -1,6 +1,7 @@
 package states.npc.lander;
 
 
+import components.update.HumanFinderComponent;
 import components.update.ShootableComponent;
 import components.draw.DrawComponent;
 import fsm.IState;
@@ -24,7 +25,19 @@ class Die implements IState
 		tc.mark = tc.t + 1 + 2 * hxd.Math.random();
 		e.removeComponent(Draw);
 		e.removeComponent(Shootable);
-		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(Lander)));		 
+		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(Lander)));
+		
+		var hf:HumanFinderComponent = cast e.get(HumanFinder);
+		if ( hf.target_id != null ){
+			var he = e.engine.getEntity(hf.target_id);
+			if ( he != null ){
+				var hf:FSMComponent = cast he.get(FSM);
+				if ( hf.state.match(Human(Grabbed))){
+					hf.next_state = Human(Falling);
+				}
+				
+			}
+		}
 	}
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
