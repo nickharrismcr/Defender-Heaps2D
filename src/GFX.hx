@@ -1,3 +1,4 @@
+import h3d.Vector;
 import h2d.Anim;
 import h2d.Tile;
  
@@ -61,6 +62,19 @@ class GFX
         GFX.disperse_tiles[s]=new DisperseTiles(xpixels,ypixels,frame1);
         GFX.anim_rates[s] = speed;
         
+    }
+
+    public static function getRadarColors(g:PNG):Array<Array<Vector>>
+    {
+        switch (g){
+            case Baiter: return [ [ new Vector(0,0.7,0) ] , [ new Vector(0,0,0) ]];
+            case Lander: return [ [ new Vector(0.5,0.5,0) ],  [ new Vector(0,0.5,0) ]];
+            case Mutant: return [ [ new Vector(1,0,0),new Vector(0,1,0),new Vector(0,0,1),new Vector(1,1,0)], 
+                                  [ new Vector(1,0,0),new Vector(0,1,0),new Vector(0,0,1),new Vector(1,1,0)]
+                                ];
+            case Human: return [ [ new Vector(1,0.0,1) ] , [ new Vector(0.4,0.0,0.4) ]];
+            case _ : return [[],[]];
+        }
     }
 
     public static function getAnim(png:PNG):h2d.Anim

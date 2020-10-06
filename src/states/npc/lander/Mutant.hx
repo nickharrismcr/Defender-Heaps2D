@@ -30,13 +30,20 @@ class Mutant implements IState
 			var hfsm:FSMComponent = cast he.get(FSM);
 			hfsm.next_state = Human(Die);
 		}
-
+		var tc:TimerComponent = cast e.get(Timer);
+		tc.mark = tc.t + 0.25;
 	}
 
 
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
-		 
+		var pc:PosComponent = cast e.get(Pos);
+		var tc:TimerComponent = cast e.get(Timer);
+		if ( tc.t > tc.mark ){
+			tc.mark = tc.t + 0.25;
+			pc.dx = Std.random(2)==1 ? -400 : 400;
+			pc.dy = Std.random(2)==1 ? -400 : 400;
+		}
 	}
 
 	public function exit(c:FSMComponent,e:Entity,dt:Float)

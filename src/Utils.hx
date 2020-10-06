@@ -14,6 +14,11 @@ class Utils
        return new h3d.Vector(r,g,b,1);
     }
 
+    public static function random(from:Int,to:Int):Int
+    {
+        return from + Std.random(to-from);
+    }
+
     public static function getBulletVector(firer:PosComponent,target:PosComponent,time:Float)
     {
         var projected_x:Float = target.x + (target.dx*time);

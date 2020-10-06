@@ -4,6 +4,7 @@ import components.update.HumanComponent;
 import haxe.display.Display.Package;
 import components.update.PosComponent;
 import components.draw.DrawComponent;
+import event.events.HumanLanded;
 import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
@@ -27,7 +28,6 @@ class Falling implements IState
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
 		var pc:PosComponent = cast e.get(Pos);
-		pc.y = pc.y + pc.dy * dt; 
 		pc.dy = pc.dy + (dt * 200);
 		//Logging.trace('falling e ${e.id}  y ${pc.y} dy ${pc.dy} dt {$dt}');
 		
@@ -38,6 +38,7 @@ class Falling implements IState
 			var h:HumanComponent = cast e.get(Human);
 			if ( h.dropped_height > sh/2 ){
 				c.next_state=Human(Walk);
+				MessageCentre.notify(new HumanLandedEvent(e,pc));
 			}else{
 				c.next_state=Human(Die);
 			}

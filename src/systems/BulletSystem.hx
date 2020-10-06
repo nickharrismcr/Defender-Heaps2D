@@ -3,6 +3,7 @@ package systems;
 import components.update.PosComponent;
 import components.update.TimerComponent;
 import components.update.BulletComponent;
+import components.update.LifeComponent;
 import components.draw.DrawComponent;
 
 import event.events.FireBulletEvent;
@@ -40,12 +41,14 @@ class BulletSystem extends System implements ISystem
 		var p = new PosComponent();
 		p.x = firer.x; 
 		p.y = firer.y;
+		p.kill_off_screen = true;
 		var time = Config.settings.bullet_time;
 		var vec = Utils.getBulletVector(firer,target,time);
 		p.dx = vec.x;
 		p.dy = vec.y;
 		e.addComponent(p);
 		e.addComponent( new BulletComponent());
+		e.addComponent( new LifeComponent(4));
 		e.addComponent( new DrawComponent(GFX.getAnim(Bullet)));
 		this.engine.addEntity(e);
 	}
@@ -67,11 +70,6 @@ class BulletSystem extends System implements ISystem
 					this.engine.removeEntity(e);
 					MessageCentre.notify(new KilledEvent(other));
 				}
-			}
-
-			var t:TimerComponent = cast e.get(Timer);
-			if ( t.t > 4 ){
-				e.engine.removeEntity(e);
 			}
 		}
 	}

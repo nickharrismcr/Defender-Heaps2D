@@ -1,5 +1,6 @@
 package states.npc.baiter;
 
+import components.update.ShootableComponent;
 import format.swf.Constants.TagId;
 import components.update.PosComponent;
 import fsm.IState;
@@ -29,11 +30,7 @@ class Chase implements IState
 
 
 	public function update(c:FSMComponent,e:Entity,dt:Float)
-	{
-		var pc:PosComponent = cast e.get(Pos);
-		pc.x=pc.x+pc.dx*dt;
-		pc.y=pc.y+pc.dy*dt;
-		
+	{	
 		if ( c.scratch == -1 ){
 			for ( oe in e.engine.getEntitiesWithComponent(Shootable))
 			{
@@ -49,6 +46,12 @@ class Chase implements IState
 			 c.scratch = -1;
 			 return;
 		}
+		if ( ! oe.has(Shootable)){
+			c.scratch = -1;
+			 return;
+		}
+
+		var pc:PosComponent = cast e.get(Pos);
 		var opc:PosComponent = cast oe.get(Pos);
 		if ( Std.random(100) < 3 ){
 			if ( Math.abs(pc.x-opc.x ) < e.engine.game.s2d.width ) { 
@@ -59,15 +62,12 @@ class Chase implements IState
 		var tc:TimerComponent = cast e.get(Timer);
 		if ( tc.t > tc.mark ){
 			
-			pc.dx = 800 * ( pc.x > opc.x ? -1 : 1) ;
-			pc.dy =80 * ( (pc.y > opc.y) ? -1 : 1) ; 
+			pc.dx = 800 * ( pc.x > opc.x ? -1 : 1 ) ;
+			pc.dy = 80 * ( (pc.y > opc.y) ? -1 : 1 ) ; 
 			tc.mark = tc.t+0.5; 
-			 
-			
-			
 		}
 
-		//Camera.position += ((pc.x-500)-Camera.position)/100;		
+		Camera.position += ((pc.x-e.engine.game.s2d.width/2)-Camera.position)/100;		
 	}
 
 	public function exit(c:FSMComponent,e:Entity,dt:Float)

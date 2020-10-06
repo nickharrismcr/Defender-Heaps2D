@@ -24,7 +24,7 @@ class Search implements IState
 	{
 		e.addComponent(new ShootableComponent());
 		var pc:PosComponent = cast e.get(Pos);
-		pc.dx=Std.random(200);
+		pc.dx = Std.random(2)==1 ? -100 : 100 ;
 		if ( Std.random(2)==1) pc.dx = -pc.dx;
 		pc.dy=80;
 		var fc:HumanFinderComponent = cast e.get(HumanFinder);
@@ -35,8 +35,7 @@ class Search implements IState
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
 		var pc:PosComponent = cast e.get(Pos);
-		pc.x=pc.x+pc.dx*dt;
-		pc.y=pc.y+pc.dy*dt;
+	 
 
 		var m = e.engine.game.mountainAt(Std.int(pc.x)); 
 		var wh = e.engine.game.s2d.height;

@@ -1,5 +1,6 @@
 package systems;
 
+import components.update.HumanFinderComponent;
 import fsm.FSMComponent;
 import h2d.Drawable;
 import components.update.PosComponent;
@@ -66,6 +67,10 @@ class DrawSystem extends System implements ISystem
 				d.text.text = '${e.id} ${c.state}';
 				d.text.textAlign = Center;
 				d.text.setPosition( 40 + posx - Camera.position, 50 + p.y);
+				if (e.has(HumanFinder)){
+					var hfc:HumanFinderComponent = cast e.get(HumanFinder);
+					d.text.text += ' ${hfc.target_id}';
+				}
 			}
 			
 			#end  

@@ -4,8 +4,9 @@ class Config
 {
     public static var settings = {
         bullet_time:2,
-        world_width:5000,
-        grab_speed:80
+        world_width:12000,
+        grab_speed:80,
+        play_area_start:200
     }
 
     public static var graphics = {
@@ -43,6 +44,20 @@ class Config
             xpixels : 3,
             ypixels : 8,
             anim_rate : 1
+        },
+        score250 : {
+            png : PNG.Score250,
+            frames : 3,
+            xpixels : 11,
+            ypixels : 3,
+            anim_rate : 8
+        },
+        score500 : {
+            png : PNG.Score500,
+            frames : 3,
+            xpixels : 11,
+            ypixels : 3,
+            anim_rate : 8
         }
     };
 }

@@ -22,15 +22,15 @@ class Kidnap implements IState
 	{
 		var pc:PosComponent = cast e.get(Pos);
 		pc.dy = - Config.settings.grab_speed;
+		pc.dx = 0;
 	}
 
 
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
 		var pc:PosComponent = cast e.get(Pos);
-		pc.y=pc.y+pc.dy*dt;
-
-		if ( pc.y < 200 ){
+	 
+		if ( pc.y < Config.settings.play_area_start + 60 ){
 			c.next_state = Lander(Mutant);
 		}
 	}

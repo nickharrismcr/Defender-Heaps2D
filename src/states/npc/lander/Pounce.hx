@@ -25,8 +25,6 @@ class Pounce implements IState
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
 		var pc:PosComponent = cast e.get(Pos);
-		pc.y = pc.y + pc.dy * dt;
-
 		var fc:HumanFinderComponent = cast e.get(HumanFinder);
 		var te = e.engine.getEntity(fc.target_id); 
 		if ( te == null ) {
@@ -41,7 +39,7 @@ class Pounce implements IState
 				if ( tf.state.match(Human(Walk))) {
 					tf.next_state = Human(Grabbed);
 					c.next_state = Lander(Kidnap);
-				}else{
+				} else {
 					c.next_state = Lander(Search);
 				}
 				

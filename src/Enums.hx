@@ -3,12 +3,17 @@ enum EventType
 {
     FireBullet;
     Killed;
+    HumanLanded;
+    Kidnap;
+    HumanSaved;
+    HumanPlaced;
 }
 
 enum ComponentType 
 {
     Pos;
     Draw;
+    RadarDraw;
     DrawDisperse;
     FSM;
     Timer;
@@ -19,18 +24,21 @@ enum ComponentType
     Collide;
     Human;
     HumanFinder;
+    Life;
 }
 
 enum SystemType 
 {
     DrawSystem;
     DrawDisperseSystem;
+    RadarDrawSystem;
     FSMSystem;
     TimerSystem;
     StarSystem;
     BulletSystem;
     CollideSystem;
     PosSystem;
+    LifeSystem;
 }
 
 enum States 
@@ -124,4 +132,6 @@ enum abstract PNG(String)
     var Pod = "pod.png";
     var Human = "human.png";
     var Bullet = "bullet.png";
+    var Score250 = "250.png";
+    var Score500 = "500.png";
 }

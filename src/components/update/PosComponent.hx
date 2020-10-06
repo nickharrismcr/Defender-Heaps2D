@@ -11,12 +11,14 @@ class PosComponent implements IComponent
     public var y:Float;
     public var dx:Float;
     public var dy:Float;
+    public var kill_off_screen:Bool;
 
     public function new()
     { 
         x=0;
         y=0;
-        dx=Std.random(100)-100;
-        dy=Std.random(100)-100;
+        dx=0;
+        dy=0;
+        kill_off_screen=false;
     }    
 }
