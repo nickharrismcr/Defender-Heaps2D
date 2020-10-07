@@ -36,6 +36,8 @@ class BulletSystem extends System implements ISystem
 
 	public function fire(firer:PosComponent, target:PosComponent)
 	{
+		if (this.engine.game.freeze ) return;
+
 		var e = new Entity();
 		e.addComponent(new TimerComponent());
 		var p = new PosComponent();
@@ -62,7 +64,7 @@ class BulletSystem extends System implements ISystem
 			bp.y = bp.y+bp.dy * dt;
 
 			var bd:DrawComponent = cast e.get(Draw);
-			for ( other in this.engine.getEntitiesWithComponent(Shootable))
+			for ( other in this.engine.getEntitiesWithComponent(Player))
 			{
 				var od:DrawComponent = cast other.get(Draw);
  				if ( od.drawable.getBounds().intersects(bd.drawable.getBounds()))

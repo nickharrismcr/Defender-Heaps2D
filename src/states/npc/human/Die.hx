@@ -21,6 +21,7 @@ class Die implements IState
 		var tc:TimerComponent = cast e.get(Timer);
 		tc.mark = tc.t + 1 + 2 * hxd.Math.random();
 		e.removeComponent(Draw);
+		e.removeComponent(RadarDraw);
 		e.removeComponent(Shootable);
 		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(Human)));		 
 	}

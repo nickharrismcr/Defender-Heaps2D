@@ -49,7 +49,7 @@ class StarSystem extends System implements ISystem
 			 
 			if ( t.t > t.mark) {
 				t.mark = t.t + 1 + hxd.Math.random(3);
-				p.x = Std.random(Std.int(scene.width))+Camera.position/4; 
+				p.x = -200+Std.random(Std.int(scene.width+400))+Camera.position/4; 
 				p.y = Utils.random(Config.settings.play_area_start, Std.int(scene.height * 0.75 ));
 				s.col = Utils.rand_col();
 				s.bmp.setPosition(p.x,p.y);

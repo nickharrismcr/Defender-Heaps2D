@@ -61,6 +61,8 @@ class DrawSystem extends System implements ISystem
 				posx=posx+ww;
 
 			d.drawable.setPosition(posx-Camera.position,p.y);
+			d.drawable.scaleX = if (d.flip) -1 else 1;
+			
 			#if debug
 			var c:FSMComponent = cast e.get(FSM);
 			if ( c != null ){

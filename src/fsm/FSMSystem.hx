@@ -45,7 +45,7 @@ class FSMSystem implements ISystem extends System
     {
         var statecls:IState;
         var e_fsm:FSMComponent = cast e.get(FSM);
-        
+     
         if (e_fsm.next_state != null && e_fsm.next_state != e_fsm.state) {
             if (e_fsm.state != null) {
                 statecls=this.getStateClass(e_fsm.state);

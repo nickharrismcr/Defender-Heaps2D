@@ -73,6 +73,7 @@ class GFX
                                   [ new Vector(1,0,0),new Vector(0,1,0),new Vector(0,0,1),new Vector(1,1,0)]
                                 ];
             case Human: return [ [ new Vector(1,0.0,1) ] , [ new Vector(0.4,0.0,0.4) ]];
+            case Player: return [ [ new Vector(1,1,1) ] , [ new Vector(1,1,1) ]];
             case _ : return [[],[]];
         }
     }

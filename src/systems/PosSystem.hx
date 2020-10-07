@@ -27,6 +27,8 @@ class PosSystem extends System implements ISystem
 
 		for ( e in this.targets )
 		{
+			if (e.engine.game.freeze ) return;
+			
 			var bp:PosComponent = cast e.get(Pos);
 			bp.x = bp.x + bp.dx * dt;
 			bp.y = bp.y + bp.dy * dt;

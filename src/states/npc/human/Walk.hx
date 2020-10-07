@@ -17,10 +17,14 @@ class Walk implements IState
 	
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
-		e.addComponent(new DrawComponent(GFX.getAnim(Human)));	
 		var pc:PosComponent = cast e.get(Pos);
-		pc.x=Std.random(Std.int(Config.settings.world_width));
-		pc.y=e.engine.game.s2d.height - e.engine.game.mountainAt(Std.int(pc.x)) ;
+		
+		if ( ! e.has(Draw)){
+			e.addComponent(new DrawComponent(GFX.getAnim(Human)));	
+			pc.x=Std.random(Std.int(Config.settings.world_width));
+			pc.y=e.engine.game.s2d.height - e.engine.game.mountainAt(Std.int(pc.x)) ;
+		}
+		
 		pc.dy=0;
 		pc.dx=0;
 	}

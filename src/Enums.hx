@@ -25,6 +25,7 @@ enum ComponentType
     Human;
     HumanFinder;
     Life;
+    Player;
 }
 
 enum SystemType 
@@ -68,6 +69,7 @@ enum PlayerStates
     Hyperspace;
     Die;
     Explode;
+    Materialize;
 }
 
 enum HumanStates
@@ -134,4 +136,6 @@ enum abstract PNG(String)
     var Bullet = "bullet.png";
     var Score250 = "250.png";
     var Score500 = "500.png";
+    var Player = "ship.png";
+    var PlayerDie = "shipd.png";
 }

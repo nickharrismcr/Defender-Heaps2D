@@ -25,7 +25,8 @@ class Die implements IState
 		tc.mark = tc.t + 1 + 2 * hxd.Math.random();
 		e.removeComponent(Draw);
 		e.removeComponent(Shootable);
-		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(Lander)));
+		e.removeComponent(RadarDraw);
+		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(c.state.match(Lander(Mutant)) ? Mutant : Lander )));
 		
 		var hf:HumanFinderComponent = cast e.get(HumanFinder);
 		if ( hf.target_id != null ){

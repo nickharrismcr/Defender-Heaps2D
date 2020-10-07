@@ -8,6 +8,9 @@ import states.npc.baiter.Die;
 import states.npc.lander.Materialize;
 import states.npc.lander.Search;
 import states.npc.lander.Die;
+import states.player.Play;
+import states.player.Die;
+import states.player.Explode;
 
 import components.update.CollideComponent;
 import components.update.ShootableComponent;
@@ -17,6 +20,7 @@ import components.update.PosComponent;
 import components.update.HumanComponent;
 import components.update.HumanFinderComponent;
 import components.update.LifeComponent;
+import components.update.PlayerComponent;
 import components.draw.RadarDrawComponent;
 import components.draw.DrawComponent;
 
@@ -46,6 +50,9 @@ class Game extends hxd.App
 {
     public static var camera_pos:Float;
 
+    public var radartile:h2d.Tile;
+    public var player_pos:PosComponent;
+    public var freeze:Bool;
     var ecs:ecs.Engine;
     var app:hxd.App;
     var graphics:GFX;
@@ -53,7 +60,7 @@ class Game extends hxd.App
     var landers:Int=0;
     var landers_killed:Int=0;
     var tf:h2d.Text;
-    var radartile:h2d.Tile;
+    
 
     public function new()
     { 
@@ -105,6 +112,10 @@ class Game extends hxd.App
         fsm_sys.register(new states.npc.human.Grabbed());
         fsm_sys.register(new states.npc.human.Falling());
         fsm_sys.register(new states.npc.human.Die());
+        fsm_sys.register(new states.player.Play());
+        fsm_sys.register(new states.player.Die());
+        fsm_sys.register(new states.player.Explode());
+
         var stree = new StateTree();
         
         stree.addTransition(Baiter(Materialize),Baiter(Chase));
@@ -127,12 +138,16 @@ class Game extends hxd.App
         stree.addTransition(Human(Grabbed),Human(Falling));
         stree.addTransition(Human(Falling),Human(Die));
         stree.addTransition(Human(Falling),Human(Walk));
+
+        stree.addTransition(Player(Play),Player(Die));
+        stree.addTransition(Player(Die),Player(Explode));
+        stree.addTransition(Player(Explode),Player(Play));
         
         fsm_sys.setStateTree(stree);
         this.ecs.addUpdateSystem(fsm_sys);
        
         MessageCentre.register(FireBullet,bullet_sys.fireEvent);
-        MessageCentre.register(Killed,this.kill);
+        MessageCentre.register(Killed,this.kill_player);
         MessageCentre.register(HumanLanded,this.score250);
         MessageCentre.register(HumanSaved,this.score500);
         MessageCentre.register(HumanPlaced,this.score500);
@@ -142,8 +157,10 @@ class Game extends hxd.App
         this.radartile = h2d.Tile.fromColor(0xffffff,6,3);
         this.planet=new Planet(s2d);
 
-        var f=this.addBaiters(1);
-        this.ecs.schedule(4,f);
+        var f=this.addPlayer();
+        this.ecs.schedule(0.1,f);
+        //var f=this.addBaiters(1);
+        //this.ecs.schedule(4,f);
         this.landers+=20;
         var f=this.addLanders(this.landers);
         this.ecs.schedule(1,f);
@@ -175,14 +192,10 @@ class Game extends hxd.App
         this.ecs.draw (dt);
         Camera.update();
         this.debugUpdate(dt);
-        
-        // TODO move to player state  
-        if ( hxd.Key.isDown(hxd.Key.LEFT)) Camera.position -= 1500*dt;
-        if ( hxd.Key.isDown(hxd.Key.RIGHT)) Camera.position += 1500*dt;
-        
+    
         // TODO move to game state 
-        if (this.landers_killed == this.landers || hxd.Key.isPressed(hxd.Key.SPACE) ) 
-            this.ecs.schedule(2,() -> hxd.System.exit());
+        if ( hxd.Key.isPressed(hxd.Key.ESCAPE) ) 
+            hxd.System.exit();
     }
 
     private function debugUpdate(dt:Float)
@@ -193,7 +206,15 @@ class Game extends hxd.App
 
   
 
-    private function kill(ev:IEvent)
+    private function kill_player(ev:IEvent)
+    {
+        var e = ev.entity;
+        var ef:FSMComponent = cast e.get(FSM);
+        if ( ef.state.match(Player(Play)))
+            ef.next_state = Player(Die);
+    }
+
+    private function kill_npc(ev:IEvent)
     {
         var e = ev.entity;
         var ef:FSMComponent = cast e.get(FSM);
@@ -243,6 +264,27 @@ class Game extends hxd.App
         this.ecs.addEntity(e);
     }
  
+
+    private function addPlayer()
+        {        
+            return () -> {
+    
+                var e = new Entity();
+                var dc = new RadarDrawComponent(this.radartile,Player);
+                e.addComponent(dc);
+                var fc = new FSMComponent(Player(Play));
+                e.addComponent(fc);
+                var tc = new TimerComponent();
+                e.addComponent(tc);
+                var cc = new CollideComponent();
+                e.addComponent(cc);
+                var pc = new PlayerComponent();
+                e.addComponent(pc);
+                this.ecs.addEntity(e);
+                
+            } ;
+        }
+    
 
     private function addBaiters(n:Int)
     {

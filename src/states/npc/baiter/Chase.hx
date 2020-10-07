@@ -67,7 +67,7 @@ class Chase implements IState
 			tc.mark = tc.t+0.5; 
 		}
 
-		Camera.position += ((pc.x-e.engine.game.s2d.width/2)-Camera.position)/100;		
+		//Camera.position += ((pc.x-e.engine.game.s2d.width/2)-Camera.position)/100;		
 	}
 
 	public function exit(c:FSMComponent,e:Entity,dt:Float)

@@ -61,6 +61,12 @@ class Search implements IState
 			}
 		}
 		
+		
+		if ( Math.abs(pc.x-e.engine.game.player_pos.x ) < e.engine.game.s2d.width ) { 
+			if ( Std.random(600) < 3 ){
+				MessageCentre.notify(new FireBulletEvent(e,pc,e.engine.game.player_pos ));
+			}
+		}
 	}
 
 	public function exit(c:FSMComponent,e:Entity,dt:Float)
