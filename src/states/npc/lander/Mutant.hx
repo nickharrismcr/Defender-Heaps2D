@@ -25,7 +25,7 @@ class Mutant implements IState
 		e.removeComponent(Draw);
 		e.removeComponent(RadarDraw);
 		e.addComponent(new DrawComponent(GFX.getAnim(Mutant)));
-		var dc = new RadarDrawComponent(e.engine.game.radartile,Mutant);
+		var dc = new RadarDrawComponent(e.engine.game.factory.radartile,Mutant);
 		e.addComponent(dc);	
 
 		var hfc:HumanFinderComponent = cast e.get(HumanFinder);

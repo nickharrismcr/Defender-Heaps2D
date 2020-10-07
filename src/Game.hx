@@ -12,17 +12,7 @@ import states.player.Play;
 import states.player.Die;
 import states.player.Explode;
 
-import components.update.CollideComponent;
-import components.update.ShootableComponent;
-import components.update.StarComponent;
-import components.update.TimerComponent;
 import components.update.PosComponent;
-import components.update.HumanComponent;
-import components.update.HumanFinderComponent;
-import components.update.LifeComponent;
-import components.update.PlayerComponent;
-import components.draw.RadarDrawComponent;
-import components.draw.DrawComponent;
 
 import fsm.StateTree;
 import fsm.FSMSystem;
@@ -43,6 +33,7 @@ import systems.LifeSystem;
 import GFX;
 import Planet;
 import Camera;
+import Factory;
 
 import hxd.Window.DisplayMode;
  
@@ -50,9 +41,10 @@ class Game extends hxd.App
 {
     public static var camera_pos:Float;
 
-    public var radartile:h2d.Tile;
+    
     public var player_pos:PosComponent;
     public var freeze:Bool;
+    public var factory:Factory;   
     var ecs:ecs.Engine;
     var app:hxd.App;
     var graphics:GFX;
@@ -60,12 +52,11 @@ class Game extends hxd.App
     var landers:Int=0;
     var landers_killed:Int=0;
     var tf:h2d.Text;
-    
+     
 
     public function new()
     { 
         super();
-        
     }
 
     public override function init()
@@ -79,6 +70,7 @@ class Game extends hxd.App
         Camera.position = Config.settings.world_width/2;
 
         this.ecs=new ecs.Engine(this);
+        this.factory = new Factory(this.ecs);
 
         var draw_sys = new DrawSystem();
         this.ecs.addDrawSystem(draw_sys);
@@ -154,20 +146,20 @@ class Game extends hxd.App
 
        
         GFX.init();
-        this.radartile = h2d.Tile.fromColor(0xffffff,6,3);
+        
         this.planet=new Planet(s2d);
 
-        var f=this.addPlayer();
+        var f=this.factory.addPlayer();
         this.ecs.schedule(0.1,f);
-        //var f=this.addBaiters(1);
+        //var f=this.factory.addBaiters(1);
         //this.ecs.schedule(4,f);
         this.landers+=20;
-        var f=this.addLanders(this.landers);
+        var f=this.factory.addLanders(this.landers);
         this.ecs.schedule(1,f);
-        var f=this.add_humans(20 );
+        var f=this.factory.add_humans(20 );
         this.ecs.schedule(1,f);
 
-        var f=this.addStars(50);
+        var f=this.factory.addStars(50);
         this.ecs.schedule(0.1,f);
 
         // FPS 
@@ -229,7 +221,7 @@ class Game extends hxd.App
     private function score250(ev:IEvent)
     {
         var ev:HumanLandedEvent = cast ev;
-        this.addScore(250,ev.pos.x,ev.pos.y,0,0);
+        this.factory.addScore(250,ev.pos.x,ev.pos.y,0,0);
     }
 
     private function score500(ev:IEvent)
@@ -238,140 +230,15 @@ class Game extends hxd.App
         {
             case HumanSaved : { 
                 var ev:HumanSavedEvent = cast ev;
-                this.addScore(500,ev.pos.x,ev.pos.y,0,0);
+                this.factory.addScore(500,ev.pos.x,ev.pos.y,0,0);
             }
             case HumanPlaced : { 
                 var ev:HumanPlacedEvent = cast ev;
-                this.addScore(500,ev.pos.x,ev.pos.y,0,0);
+                this.factory.addScore(500,ev.pos.x,ev.pos.y,0,0);
             }
             case _: {}   
         }    
     }
 
-    private function addScore(n:Int, x:Float, y:Float, dx:Float, dy:Float ){
-        var e = new Entity();
-        var anim = if (n==250) Score250 else Score500; 
-        var dc = new DrawComponent(GFX.getAnim(anim));
-        e.addComponent(dc);
-        var pc = new PosComponent();
-        pc.x = x;
-        pc.y = y;
-        pc.dx = dx;
-        pc.dy = dy; 
-        e.addComponent(pc);
-        var lc = new LifeComponent(3);
-        e.addComponent(lc);
-        this.ecs.addEntity(e);
-    }
- 
-
-    private function addPlayer()
-        {        
-            return () -> {
     
-                var e = new Entity();
-                var dc = new RadarDrawComponent(this.radartile,Player);
-                e.addComponent(dc);
-                var fc = new FSMComponent(Player(Play));
-                e.addComponent(fc);
-                var tc = new TimerComponent();
-                e.addComponent(tc);
-                var cc = new CollideComponent();
-                e.addComponent(cc);
-                var pc = new PlayerComponent();
-                e.addComponent(pc);
-                this.ecs.addEntity(e);
-                
-            } ;
-        }
-    
-
-    private function addBaiters(n:Int)
-    {
-        
-        return () -> {
-
-            for ( i in 0...n )
-            {   
-                var e = new Entity();
-                var dc = new RadarDrawComponent(this.radartile,Baiter);
-                e.addComponent(dc);
-                var pc = new PosComponent();
-                e.addComponent(pc);
-                var fc = new FSMComponent(Baiter(Materialize));
-                e.addComponent(fc);
-                var tc = new TimerComponent();
-                e.addComponent(tc);
-                var cc = new CollideComponent();
-                e.addComponent(cc);
-                this.ecs.addEntity(e);
-            }
-        } ;
-    }
-
-    private function addLanders(n:Int)
-    {
-        
-        return () -> {
-            for ( i in 0...n )
-            {
-                var e = new Entity();  
-                var rdc = new RadarDrawComponent(this.radartile,Lander);
-                e.addComponent(rdc); 
-                var pc = new PosComponent();
-                e.addComponent(pc);
-                var fc = new FSMComponent(Lander(Materialize));
-                e.addComponent(fc);
-                var tc = new TimerComponent();
-                e.addComponent(tc);
-                var cc = new CollideComponent();
-                e.addComponent(cc);
-                var hc = new HumanFinderComponent();
-                e.addComponent(hc);
-                this.ecs.addEntity(e);
-            }
-        } ;
-    }
-
-    private function addStars(n:Int)
-    {
-        return () -> {
-            for ( i in 1...n ){
-                var s = new StarComponent();
-                var p = new PosComponent();
-                var t = new TimerComponent();
-                var e = new Entity();
-                e.addComponent(s);
-                e.addComponent(p);
-                e.addComponent(t);
-                this.ecs.addEntity(e);
-            }
-        };
-    }
-
-    private function add_humans(n:Int)
-    {
-        
-        return () -> {
-            for ( i in 0...n )
-            {
-                var e = new Entity();  
-                var dc = new RadarDrawComponent(this.radartile,Human);
-                e.addComponent(dc); 
-                var pc = new PosComponent();
-                e.addComponent(pc);
-                var fc = new FSMComponent(Human(Walk));
-                e.addComponent(fc);
-                var tc = new TimerComponent();
-                e.addComponent(tc);
-                var cc = new CollideComponent();
-                e.addComponent(cc);
-                //var sc = new ShootableComponent();
-                //e.addComponent(sc);
-                var hc = new HumanComponent();
-                e.addComponent(hc);
-                this.ecs.addEntity(e);
-            }
-        } ;
-    }     
 }
