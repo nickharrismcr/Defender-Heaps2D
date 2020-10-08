@@ -2,6 +2,7 @@ package states.npc.human;
 
 import components.update.PosComponent;
 import components.draw.DrawComponent;
+import components.update.CollideComponent;
 import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
@@ -20,6 +21,9 @@ class Walk implements IState
 		var pc:PosComponent = cast e.get(Pos);
 		
 		if ( ! e.has(Draw)){
+
+			var cc = new CollideComponent();
+			e.addComponent(cc);
 			e.addComponent(new DrawComponent(GFX.getAnim(Human)));	
 			pc.x=Std.random(Std.int(Config.settings.world_width));
 			pc.y=e.engine.game.s2d.height - e.engine.game.mountainAt(Std.int(pc.x)) ;

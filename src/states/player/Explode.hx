@@ -1,5 +1,6 @@
 package states.player;
  
+import event.events.PlayerExplode.PlayerExplodeEvent;
 import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
@@ -19,12 +20,17 @@ class Explode implements IState
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
 		e.removeComponent(Draw);
+		MessageCentre.notify(new PlayerExplodeEvent(e));
+		var tc:TimerComponent = cast e.get(Timer);
+		tc.mark = tc.t + 4;
 	}
 
 	public function update(c:FSMComponent,e:Entity,dt:Float)
 	{
 		var tc:TimerComponent = cast e.get(Timer);
-	 
+		if (tc.t > tc.mark){
+			c.next_state = Player(Play);
+		}
 	}
 	public function exit(c:FSMComponent,e:Entity,dt:Float)
 	{

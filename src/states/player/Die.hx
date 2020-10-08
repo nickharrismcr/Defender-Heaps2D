@@ -19,6 +19,7 @@ class Die implements IState
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
 		 e.removeComponent(Draw);
+		 e.removeComponent(Player);
 		 e.addComponent( new DrawComponent(GFX.getAnim(PlayerDie)));
 		 var tc:TimerComponent = cast e.get(Timer);
 		 tc.mark = tc.t + 2;

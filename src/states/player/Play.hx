@@ -21,13 +21,13 @@ class Play implements IState
 	{
 		var dc:DrawComponent = new DrawComponent(GFX.getAnim(Player));
 		e.addComponent(dc);
-		if ( ! e.has(Pos)){
-			var pc = new PosComponent();
-			pc.x=0;
-			pc.y=e.engine.game.s2d.height/2;
-			e.addComponent(pc);
-			e.engine.game.player_pos = pc;
-		}
+		e.addComponent(new PlayerComponent());
+		var pc = new PosComponent();
+		pc.x=0;
+		pc.y=e.engine.game.s2d.height/2;
+		e.addComponent(pc);
+		e.engine.game.player_pos = pc;
+ 
 		e.engine.game.freeze=false;
 	}
 

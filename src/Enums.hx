@@ -7,6 +7,7 @@ enum EventType
     Kidnap;
     HumanSaved;
     HumanPlaced;
+    PlayerExplode;
 }
 
 enum ComponentType 
@@ -20,12 +21,12 @@ enum ComponentType
     Star;
     Bullet;
     Deadly;
-    Shootable;
     Collide;
     Human;
     HumanFinder;
     Life;
     Player;
+    Laser;
 }
 
 enum SystemType 

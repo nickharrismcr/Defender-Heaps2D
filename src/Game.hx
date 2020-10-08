@@ -1,3 +1,7 @@
+import haxe.ds.Vector;
+import h2d.Particles.ParticleGroup;
+import haxe.macro.Context.Message;
+import h3d.scene.Mesh;
 import event.events.HumanSaved.HumanSavedEvent;
 import event.events.HumanLanded.HumanLandedEvent;
 import event.events.HumanPlaced.HumanPlacedEvent;
@@ -29,6 +33,7 @@ import systems.StarSystem;
 import systems.BulletSystem;
 import systems.PosSystem;
 import systems.LifeSystem;
+import systems.CollideSystem;
 
 import GFX;
 import Planet;
@@ -52,6 +57,8 @@ class Game extends hxd.App
     var landers:Int=0;
     var landers_killed:Int=0;
     var tf:h2d.Text;
+    var particles:h2d.Particles;
+    var particle_group:h2d.ParticleGroup;
      
 
     public function new()
@@ -61,8 +68,9 @@ class Game extends hxd.App
 
     public override function init()
     {
-        var win=hxd.Window.getInstance();
+       //Logging.level = DEBUG;
         #if !debug
+        var win=hxd.Window.getInstance();
         win.displayMode = Fullscreen;
         Logging.level = ERROR;
         #end
@@ -88,6 +96,9 @@ class Game extends hxd.App
         this.ecs.addUpdateSystem(pos_sys);
         var life_sys = new LifeSystem();
         this.ecs.addUpdateSystem(life_sys);
+        var collide_sys = new CollideSystem();
+        this.ecs.addUpdateSystem(collide_sys);
+
 
         var fsm_sys = new FSMSystem();
         // register a state object with the fcm system
@@ -139,27 +150,45 @@ class Game extends hxd.App
         this.ecs.addUpdateSystem(fsm_sys);
        
         MessageCentre.register(FireBullet,bullet_sys.fireEvent);
-        MessageCentre.register(Killed,this.kill_player);
+        MessageCentre.register(Killed,this.kill);
         MessageCentre.register(HumanLanded,this.score250);
         MessageCentre.register(HumanSaved,this.score500);
         MessageCentre.register(HumanPlaced,this.score500);
+        MessageCentre.register(PlayerExplode,this.triggerExplodeParticles);
 
        
         GFX.init();
-        
+        this.particles = new h2d.Particles(s2d);
+        this.particle_group = new ParticleGroup(this.particles);
+        this.particle_group.emitLoop = false;
+        this.particle_group.emitMode = Point;
+        this.particle_group.life = 3;
+        this.particle_group.size = 0.6;
+        this.particle_group.speed = 600;
+        this.particle_group.speedIncr = -0.5;
+        this.particle_group.speedRand = 0.5;
+        this.particle_group.emitDelay = 0;
+        this.particle_group.emitSync = 1;
+        this.particle_group.fadeIn=0;
+        this.particle_group.fadeOut=1;
+        this.particle_group.gravity=100 ;
+        this.particle_group.colorGradient = h3d.mat.Texture.fromColor(0xff0000);
+        this.particles.setPosition(300,300);
+        this.particle_group.enable = false;
+        this.particles.addGroup(this.particle_group);
+          
         this.planet=new Planet(s2d);
 
-        var f=this.factory.addPlayer();
+        var f=this.factory.addPlayerFunc();
         this.ecs.schedule(0.1,f);
         //var f=this.factory.addBaiters(1);
         //this.ecs.schedule(4,f);
         this.landers+=20;
-        var f=this.factory.addLanders(this.landers);
+        var f=this.factory.addLandersFunc(this.landers);
         this.ecs.schedule(1,f);
-        var f=this.factory.add_humans(20 );
+        var f=this.factory.addHumansFunc(20 );
         this.ecs.schedule(1,f);
-
-        var f=this.factory.addStars(50);
+        var f=this.factory.addStarsFunc(50);
         this.ecs.schedule(0.1,f);
 
         // FPS 
@@ -196,17 +225,32 @@ class Game extends hxd.App
         this.tf.text = '${fps}  ${Std.int(Camera.position)}';
     }
 
-  
-
-    private function kill_player(ev:IEvent)
+    private function triggerExplodeParticles(ev:IEvent)
+    {
+        var sw = this.s2d.width;
+		var ww = Config.settings.world_width;
+        var pos:PosComponent = cast ev.entity.get(Pos);
+        var posx=pos.x;
+        if ( Camera.position < sw && pos.x > ww - sw )
+            posx=posx-ww;
+        if ( Camera.position > ww - sw && pos.x <  sw )
+            posx=posx+ww;
+        this.particles.setPosition(20+posx-Camera.position,pos.y);
+        this.particle_group.enable = true;
+        this.ecs.schedule( 3, () ->this.particle_group.enable = false );
+    }
+ 
+    private function kill(ev:IEvent)
     {
         var e = ev.entity;
         var ef:FSMComponent = cast e.get(FSM);
-        if ( ef.state.match(Player(Play)))
+        if ( ef.state.match(Player(Play))) 
             ef.next_state = Player(Die);
+        else 
+            this.killNPC(ev);
     }
 
-    private function kill_npc(ev:IEvent)
+    private function killNPC(ev:IEvent)
     {
         var e = ev.entity;
         var ef:FSMComponent = cast e.get(FSM);
@@ -239,6 +283,4 @@ class Game extends hxd.App
             case _: {}   
         }    
     }
-
-    
 }

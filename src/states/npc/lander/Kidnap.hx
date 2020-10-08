@@ -1,6 +1,5 @@
 package states.npc.lander;
-
-import components.update.ShootableComponent;
+ 
 import event.events.FireBulletEvent;
 import components.update.PosComponent;
 import fsm.IState;

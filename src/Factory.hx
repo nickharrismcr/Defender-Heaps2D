@@ -2,7 +2,6 @@ import ecs.Entity;
 import ecs.Engine;
 
 import components.update.CollideComponent;
-import components.update.ShootableComponent;
 import components.update.StarComponent;
 import components.update.TimerComponent;
 import components.update.PosComponent;
@@ -42,7 +41,7 @@ class Factory
     }
  
 
-    public function addPlayer()
+    public function addPlayerFunc()
         {        
             return () -> {
     
@@ -53,17 +52,13 @@ class Factory
                 e.addComponent(fc);
                 var tc = new TimerComponent();
                 e.addComponent(tc);
-                var cc = new CollideComponent();
-                e.addComponent(cc);
-                var pc = new PlayerComponent();
-                e.addComponent(pc);
                 this.ecs.addEntity(e);
                 
             } ;
         }
     
 
-    public function addBaiters(n:Int)
+    public function addBaitersFunc(n:Int)
     {
         
         return () -> {
@@ -79,14 +74,13 @@ class Factory
                 e.addComponent(fc);
                 var tc = new TimerComponent();
                 e.addComponent(tc);
-                var cc = new CollideComponent();
-                e.addComponent(cc);
+             
                 this.ecs.addEntity(e);
             }
         } ;
     }
 
-    public function addLanders(n:Int)
+    public function addLandersFunc(n:Int)
     {
         
         return () -> {
@@ -101,8 +95,6 @@ class Factory
                 e.addComponent(fc);
                 var tc = new TimerComponent();
                 e.addComponent(tc);
-                var cc = new CollideComponent();
-                e.addComponent(cc);
                 var hc = new HumanFinderComponent();
                 e.addComponent(hc);
                 this.ecs.addEntity(e);
@@ -110,7 +102,7 @@ class Factory
         } ;
     }
 
-    public function addStars(n:Int)
+    public function addStarsFunc(n:Int)
     {
         return () -> {
             for ( i in 1...n ){
@@ -126,7 +118,7 @@ class Factory
         };
     }
 
-    public function add_humans(n:Int)
+    public function addHumansFunc(n:Int)
     {
         
         return () -> {
@@ -141,10 +133,6 @@ class Factory
                 e.addComponent(fc);
                 var tc = new TimerComponent();
                 e.addComponent(tc);
-                var cc = new CollideComponent();
-                e.addComponent(cc);
-                //var sc = new ShootableComponent();
-                //e.addComponent(sc);
                 var hc = new HumanComponent();
                 e.addComponent(hc);
                 this.ecs.addEntity(e);

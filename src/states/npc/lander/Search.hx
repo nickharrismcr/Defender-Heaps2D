@@ -1,7 +1,7 @@
 package states.npc.lander;
 
 import components.update.HumanComponent;
-import components.update.ShootableComponent;
+import components.update.CollideComponent;
 import event.events.FireBulletEvent;
 import components.update.PosComponent;
 import components.update.HumanFinderComponent;
@@ -22,7 +22,9 @@ class Search implements IState
 	
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
-		e.addComponent(new ShootableComponent());
+
+		e.addComponent(new CollideComponent());
+	 
 		var pc:PosComponent = cast e.get(Pos);
 		pc.dx = Std.random(2)==1 ? -100 : 100 ;
 		if ( Std.random(2)==1) pc.dx = -pc.dx;

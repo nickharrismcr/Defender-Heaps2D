@@ -51,8 +51,10 @@ class Entity {
 
 	public function addComponent(c:IComponent):Void
 	{
+		if ( components.exists(c.type)) { 
+			return;
+		}
 		Logging.trace('added component ${c.type} to Entity ${this.id}');
-
 		components[c.type]=c;
 		if (this.engine != null ) { 
 			this.engine.addComponent(this,c);

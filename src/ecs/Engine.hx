@@ -181,6 +181,7 @@ class Engine
 	{
 		if ( this.ents_with_comp.exists(c))
 		{
+			Logging.trace('removed ${e.id} from list for $c');
 			this.ents_with_comp[c].remove(e);
 		}
 	}
@@ -193,7 +194,8 @@ class Engine
 
 	public function getEntitiesWithComponent(c:ComponentType):Array<Entity>
 	{
-		if ( this.ents_with_comp[c] == null ) return [];
+		if ( ! this.ents_with_comp.exists(c)) return [];
+		if ( this.ents_with_comp[c].length == 0 ) return [];
 		// TODO : optimise?
 		return Lambda.filter(this.ents_with_comp[c], (e) -> e.isActive() && this.getEntity(e.id)!=null );
 	}

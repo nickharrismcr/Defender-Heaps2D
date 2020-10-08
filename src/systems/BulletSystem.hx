@@ -59,13 +59,10 @@ class BulletSystem extends System implements ISystem
 	{
 		for ( e in this.targets )
 		{
-			var bp:PosComponent = cast e.get(Pos);
-			bp.x = bp.x+bp.dx * dt;
-			bp.y = bp.y+bp.dy * dt;
-
 			var bd:DrawComponent = cast e.get(Draw);
 			for ( other in this.engine.getEntitiesWithComponent(Player))
 			{
+				Logging.trace('collide check ${e.id} ${other.id}');
 				var od:DrawComponent = cast other.get(Draw);
  				if ( od.drawable.getBounds().intersects(bd.drawable.getBounds()))
 				{

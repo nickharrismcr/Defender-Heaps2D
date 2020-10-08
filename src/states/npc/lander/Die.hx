@@ -2,16 +2,15 @@ package states.npc.lander;
 
 
 import components.update.HumanFinderComponent;
-import components.update.ShootableComponent;
 import components.draw.DrawComponent;
+import components.update.TimerComponent;
+import components.draw.DrawDisperseComponent;
+
 import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
 
 
-import components.update.TimerComponent;
-import components.update.ShootableComponent;
-import components.draw.DrawDisperseComponent;
 
 class Die implements IState
 {
@@ -24,7 +23,7 @@ class Die implements IState
 		var tc:TimerComponent = cast e.get(Timer);
 		tc.mark = tc.t + 1 + 2 * hxd.Math.random();
 		e.removeComponent(Draw);
-		e.removeComponent(Shootable);
+		e.removeComponent(Collide);
 		e.removeComponent(RadarDraw);
 		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(c.state.match(Lander(Mutant)) ? Mutant : Lander )));
 		

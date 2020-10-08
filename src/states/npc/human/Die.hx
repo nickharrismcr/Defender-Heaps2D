@@ -22,7 +22,7 @@ class Die implements IState
 		tc.mark = tc.t + 1 + 2 * hxd.Math.random();
 		e.removeComponent(Draw);
 		e.removeComponent(RadarDraw);
-		e.removeComponent(Shootable);
+		e.removeComponent(Collide);
 		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(Human)));		 
 	}
 	public function update(c:FSMComponent,e:Entity,dt:Float)
