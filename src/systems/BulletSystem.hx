@@ -38,6 +38,7 @@ class BulletSystem extends System implements ISystem
 	{
 		if (this.engine.game.freeze ) return;
 
+		Logging.trace('fire bullet from ${firer.x},${firer.y} to ${target.x},${target.y}');
 		var e = new Entity();
 		e.addComponent(new TimerComponent());
 		var p = new PosComponent();
@@ -62,7 +63,7 @@ class BulletSystem extends System implements ISystem
 			var bd:DrawComponent = cast e.get(Draw);
 			for ( other in this.engine.getEntitiesWithComponent(Player))
 			{
-				Logging.trace('collide check ${e.id} ${other.id}');
+				 
 				var od:DrawComponent = cast other.get(Draw);
  				if ( od.drawable.getBounds().intersects(bd.drawable.getBounds()))
 				{

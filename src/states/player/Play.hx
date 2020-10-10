@@ -49,7 +49,7 @@ class Play implements IState
 	 
 		if ( hxd.Key.isDown( Config.keys.thrust )) {
 			if ( Math.abs(pos.dx) < 1000 ){
-				pos.dx += ( 500 * pl.direction * dt ) ;
+				pos.dx += ( 500 * pos.direction * dt ) ;
 			}
 		} else {
 			if ( Math.abs(pos.dx) > 0 ){
@@ -68,20 +68,20 @@ class Play implements IState
 			}
 		}
 
-		var offset_target =  ( pl.direction == 1 )  ? 200 : e.engine.game.s2d.width-200;
+		var offset_target =  ( pos.direction == 1 )  ? 200 : e.engine.game.s2d.width-200;
 		pl.camera_offset += (  offset_target - pl.camera_offset  )/100;
 		
 		if ( hxd.Key.isDown( Config.keys.reverse )) {
 			if (! pl.reverse_down ){
 				pl.reverse_down = true;
-				pl.direction = - pl.direction;
+				pos.direction = - pos.direction;
 				pos.dx = 0;
 			}
 		} else {
 			pl.reverse_down = false;
 		}
 		var dc:DrawComponent = cast e.get(Draw);
-		dc.flip = ( pl.direction == 1 )? false : true;
+		dc.flip = ( pos.direction == 1 )? false : true;
 	}
 }
  

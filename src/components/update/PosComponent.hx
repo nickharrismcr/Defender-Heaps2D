@@ -11,6 +11,7 @@ class PosComponent implements IComponent
     public var y:Float;
     public var dx:Float;
     public var dy:Float;
+    public var direction:Int;
     public var kill_off_screen:Bool;
 
     public function new()
@@ -20,5 +21,6 @@ class PosComponent implements IComponent
         dx=0;
         dy=0;
         kill_off_screen=false;
+        direction=1;
     }    
 }

@@ -1,5 +1,6 @@
 package states.player;
  
+import components.update.PlayerComponent;
 import fsm.IState;
 import ecs.Entity;
 import fsm.FSMComponent;
@@ -19,11 +20,14 @@ class Die implements IState
 	public function enter(c:FSMComponent,e:Entity,dt:Float)
 	{
 		 e.removeComponent(Draw);
+		 var pos:PosComponent = cast e.get(Pos);
+		 var dc = new DrawComponent(GFX.getAnim(PlayerDie));
+		 dc.flip = ( pos.direction == 1 )? false : true;
+		 e.addComponent(dc);
 		 e.removeComponent(Player);
-		 e.addComponent( new DrawComponent(GFX.getAnim(PlayerDie)));
 		 var tc:TimerComponent = cast e.get(Timer);
 		 tc.mark = tc.t + 2;
-		 var pos:PosComponent = cast e.get(Pos);
+		 
 		 pos.dx = 0;
 		 pos.dy = 0;
 
