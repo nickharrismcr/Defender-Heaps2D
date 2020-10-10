@@ -1,3 +1,4 @@
+import components.update.HumanFinderComponent;
 import components.update.PlayerComponent;
 import haxe.ds.Vector;
 import event.events.HumanSaved.HumanSavedEvent;
@@ -31,6 +32,7 @@ import GFX;
 import Planet;
 import Camera;
 import Factory;
+import Hud;
 import hxd.Window.DisplayMode;
 
 class Game extends hxd.App {
@@ -46,7 +48,8 @@ class Game extends hxd.App {
 	var planet:Planet;
 	var landers:Int = 0;
 	var landers_killed:Int = 0;
-	var tf:h2d.Text;
+    var tf:h2d.Text;
+    var hud:Hud;
 
 	public function new() {
 		super();
@@ -140,7 +143,8 @@ class Game extends hxd.App {
 		MessageCentre.register(HumanPlaced, this.score500);
 		MessageCentre.register(PlayerExplode, this.triggerExplodeParticles);
 
-		GFX.init(this.s2d);
+        GFX.init(this.s2d);
+        this.hud = new Hud(this.s2d);
 
 		this.planet = new Planet(s2d);
 
@@ -172,7 +176,8 @@ class Game extends hxd.App {
 
 	public override function update(dt:Float) {
 		if (this.planet != null)
-			this.planet.draw();
+            this.planet.draw();
+        this.hud.update(dt);
 		this.ecs.update(dt);
 		this.ecs.draw(dt);
 		Camera.update();
@@ -199,8 +204,8 @@ class Game extends hxd.App {
 		if (Camera.position > ww - sw && pos.x < sw)
 			posx = posx + ww;
 		GFX.particles.setPosition((20 * pos.direction) + posx - Camera.position, pos.y);
-		GFX.particle_group.enable = true;
-		this.ecs.schedule(2, () -> GFX.particle_group.enable = false);
+		GFX.particleGroup.enable = true;
+		this.ecs.schedule(2, () -> GFX.particleGroup.enable = false);
 	}
 
 	private function kill(ev:IEvent) {

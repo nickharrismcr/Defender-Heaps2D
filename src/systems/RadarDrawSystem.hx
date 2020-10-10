@@ -24,7 +24,7 @@ class RadarDrawSystem extends System implements ISystem
 		this.filter=new Filter();
 		filter.add(RadarDraw); 
 		filter.add(Pos);
-		gfx = new h2d.Graphics(s2d);
+		
 	}
 
  
@@ -55,17 +55,7 @@ class RadarDrawSystem extends System implements ISystem
 		var ww = Config.settings.world_width;
 		var rsw = rw * (sw/ww);
 
-		gfx.clear(); 
-		gfx.beginFill(0x000099); 
-		gfx.drawRect(0,rye+20,sw,3);
-		gfx.drawRect(rxs-20,0,3,rye+20);
-		gfx.drawRect(rxe+20,0,3,rye+20);
-		gfx.endFill();
-		gfx.beginFill(0xffffff);
-		gfx.drawRect((sw/2)-(rsw/2),0,rsw,3); 
-		gfx.drawRect((sw/2)-(rsw/2),rye+17,rsw,3);
-		gfx.endFill();
-
+		
 		for ( e in this.targets )
 		{
 			var p:PosComponent = cast e.get(Pos);

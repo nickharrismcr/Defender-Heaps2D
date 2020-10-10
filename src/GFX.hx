@@ -33,7 +33,9 @@ class GFX {
 	private static var anim_rates:Map<String, Int>;
 	private static var disperse_tiles:Map<String, DisperseTiles>;
 	public static var particles:h2d.Particles;
-	public static var particle_group:h2d.ParticleGroup;
+	public static var particleGroup:h2d.ParticleGroup;
+	private static var fontTiles:Array<h2d.Tile>;
+	private static var fontChars:String;
 
 	public static function init(s2d:h2d.Scene) {
 		hxd.Res.initEmbed();
@@ -47,27 +49,30 @@ class GFX {
 		}
 
 		GFX.particles = new h2d.Particles(s2d);
-		GFX.particle_group = new ParticleGroup(GFX.particles);
-		GFX.particle_group.emitLoop = false;
-		GFX.particle_group.nparts = 500;
-		GFX.particle_group.emitMode = Point;
-		GFX.particle_group.life = 2;
-		GFX.particle_group.size = 0.6;
-		GFX.particle_group.sizeIncr = -0.1;
-		GFX.particle_group.speed = 800;
-		GFX.particle_group.speedIncr = -0.8;
-		GFX.particle_group.speedRand = 0.8;
-		GFX.particle_group.emitDelay = 0;
-		GFX.particle_group.emitSync = 1;
-		GFX.particle_group.fadeIn = 0;
-		GFX.particle_group.fadeOut = 1;
-		GFX.particle_group.gravity = 200;
-		GFX.particle_group.gravityAngle = 0.01;
+		GFX.particleGroup = new ParticleGroup(GFX.particles);
+		GFX.particleGroup.emitLoop = false;
+		GFX.particleGroup.nparts = 500;
+		GFX.particleGroup.emitMode = Point;
+		GFX.particleGroup.life = 2;
+		GFX.particleGroup.size = 0.6;
+		GFX.particleGroup.sizeIncr = -0.1;
+		GFX.particleGroup.speed = 800;
+		GFX.particleGroup.speedIncr = -0.8;
+		GFX.particleGroup.speedRand = 0.8;
+		GFX.particleGroup.emitDelay = 0;
+		GFX.particleGroup.emitSync = 1;
+		GFX.particleGroup.fadeIn = 0;
+		GFX.particleGroup.fadeOut = 1;
+		GFX.particleGroup.gravity = 200;
+		GFX.particleGroup.gravityAngle = 0.01;
 		var gpix = hxd.Res.loader.load("gradient.png").toImage().getPixels(RGBA);
-		GFX.particle_group.colorGradient = h3d.mat.Texture.fromPixels(gpix);
+		GFX.particleGroup.colorGradient = h3d.mat.Texture.fromPixels(gpix);
 		GFX.particles.setPosition(300, 300);
-		GFX.particle_group.enable = false;
-		GFX.particles.addGroup(GFX.particle_group);
+		GFX.particleGroup.enable = false;
+		GFX.particles.addGroup(GFX.particleGroup);
+
+		GFX.loadfont();
+		GFX.fontChars = "0123456789:?ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	}
 
 	public static function load(png:PNG, frames:Int, xpixels:Int, ypixels:Int, speed:Int) {
@@ -79,6 +84,16 @@ class GFX {
 		var frame1 = arr[0];
 		GFX.disperse_tiles[s] = new DisperseTiles(xpixels, ypixels, frame1);
 		GFX.anim_rates[s] = speed;
+	}
+
+	public static function loadfont() {
+		var fontTex = GFX.toTexture('font.png');
+		GFX.fontTiles = h2d.Tile.fromTexture(fontTex).gridFlatten(28);
+	}
+
+	public static function getFontBitmap(char:String):h2d.Bitmap {
+		var index = GFX.fontChars.indexOf(char);
+		return new h2d.Bitmap(GFX.fontTiles[index]);
 	}
 
 	public static function getRadarColors(g:PNG):Array<Array<Vector>> {
