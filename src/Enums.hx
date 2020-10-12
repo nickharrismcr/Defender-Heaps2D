@@ -2,6 +2,7 @@
 enum EventType
 {
     FireBullet;
+    FireLaser;
     Killed;
     HumanLanded;
     Kidnap;
@@ -27,6 +28,7 @@ enum ComponentType
     Life;
     Player;
     Laser;
+    Shootable;
 }
 
 enum SystemType 
@@ -41,6 +43,8 @@ enum SystemType
     CollideSystem;
     PosSystem;
     LifeSystem;
+    LaserSystem;
+    LaserDrawSystem;
 }
 
 enum States 

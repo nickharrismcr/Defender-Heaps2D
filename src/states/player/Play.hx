@@ -2,6 +2,7 @@ package states.player;
 
 
 
+import event.events.FireLaserEvent;
 import components.update.PlayerComponent;
 import fsm.IState;
 import ecs.Entity;
@@ -46,6 +47,14 @@ class Play implements IState
 
 	private function handle_input(e:Entity,pos:PosComponent,pl:PlayerComponent,dt:Float)
 	{
+		if ( hxd.Key.isDown( Config.keys.fire )) {
+			if (! pl.fire_down ){
+				pl.fire_down = true;
+				MessageCentre.notify(new FireLaserEvent(e,pos));
+			}
+		} else {
+			pl.fire_down = false;
+		}
 	 
 		if ( hxd.Key.isDown( Config.keys.thrust )) {
 			if ( Math.abs(pos.dx) < 1000 ){

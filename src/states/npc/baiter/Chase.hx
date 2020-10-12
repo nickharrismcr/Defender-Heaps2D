@@ -1,5 +1,6 @@
 package states.npc.baiter;
 
+import components.update.ShootableComponent;
 import format.swf.Constants.TagId;
 import components.update.PosComponent;
 import fsm.IState;
@@ -15,8 +16,8 @@ class Chase implements IState {
 	public function new() {}
 
 	public function enter(c:FSMComponent, e:Entity, dt:Float) {
-		var cc = new CollideComponent();
-		e.addComponent(cc);
+		e.addComponent(new CollideComponent());
+		e.addComponent(new ShootableComponent());
 		var pc:PosComponent = cast e.get(Pos);
 		pc.dx = Std.random(400);
 		pc.dy = Std.random(200) - 100;

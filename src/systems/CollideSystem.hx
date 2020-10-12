@@ -37,12 +37,6 @@ class CollideSystem extends System implements ISystem {
 					}
 				}
 			}
-			for (other in this.engine.getEntitiesWithComponent(Laser)) {
-				var od:DrawComponent = cast other.get(Draw);
-				if (od.drawable.getBounds().intersects(bd.drawable.getBounds())) {
-					MessageCentre.notify(new KilledEvent(e));
-				}
-			}
 		}
 	}
 }

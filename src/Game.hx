@@ -28,6 +28,8 @@ import systems.BulletSystem;
 import systems.PosSystem;
 import systems.LifeSystem;
 import systems.CollideSystem;
+import systems.LaserDrawSystem;
+import systems.LaserSystem;
 import GFX;
 import Planet;
 import Camera;
@@ -48,8 +50,8 @@ class Game extends hxd.App {
 	var planet:Planet;
 	var landers:Int = 0;
 	var landers_killed:Int = 0;
-    var tf:h2d.Text;
-    var hud:Hud;
+	var tf:h2d.Text;
+	var hud:Hud;
 
 	public function new() {
 		super();
@@ -68,24 +70,19 @@ class Game extends hxd.App {
 		this.ecs = new ecs.Engine(this);
 		this.factory = new Factory(this.ecs);
 
-		var draw_sys = new DrawSystem();
-		this.ecs.addDrawSystem(draw_sys);
-		var radardraw_sys = new RadarDrawSystem(this.s2d);
-		this.ecs.addDrawSystem(radardraw_sys);
-		var dispdraw_sys = new DrawDisperseSystem();
-		this.ecs.addDrawSystem(dispdraw_sys);
-		var timer_sys = new TimerSystem();
-		this.ecs.addUpdateSystem(timer_sys);
-		var star_sys = new StarSystem(s2d);
-		this.ecs.addUpdateSystem(star_sys);
+		this.ecs.addDrawSystem(new DrawSystem());
+		this.ecs.addDrawSystem(new RadarDrawSystem(this.s2d));
+		this.ecs.addDrawSystem(new DrawDisperseSystem());
+		this.ecs.addUpdateSystem(new TimerSystem());
+		this.ecs.addUpdateSystem(new StarSystem(s2d));
 		var bullet_sys = new BulletSystem();
 		this.ecs.addUpdateSystem(bullet_sys);
-		var pos_sys = new PosSystem();
-		this.ecs.addUpdateSystem(pos_sys);
-		var life_sys = new LifeSystem();
-		this.ecs.addUpdateSystem(life_sys);
-		var collide_sys = new CollideSystem();
-		this.ecs.addUpdateSystem(collide_sys);
+		this.ecs.addUpdateSystem(new PosSystem());
+		this.ecs.addUpdateSystem(new LifeSystem());
+		this.ecs.addUpdateSystem(new CollideSystem());
+		var laser_sys = new LaserSystem();
+		this.ecs.addUpdateSystem(laser_sys);
+		this.ecs.addUpdateSystem(new LaserDrawSystem(this.s2d));
 
 		var fsm_sys = new FSMSystem();
 		// register a state object with the fcm system
@@ -142,10 +139,10 @@ class Game extends hxd.App {
 		MessageCentre.register(HumanSaved, this.score500);
 		MessageCentre.register(HumanPlaced, this.score500);
 		MessageCentre.register(PlayerExplode, this.triggerExplodeParticles);
+		MessageCentre.register(FireLaser, laser_sys.fireEvent);
 
-        GFX.init(this.s2d);
-        this.hud = new Hud(this.s2d);
-
+		GFX.init(this.s2d);
+		this.hud = new Hud(this.s2d);
 		this.planet = new Planet(s2d);
 
 		var f = this.factory.addPlayerFunc();
@@ -176,8 +173,8 @@ class Game extends hxd.App {
 
 	public override function update(dt:Float) {
 		if (this.planet != null)
-            this.planet.draw();
-        this.hud.update(dt);
+			this.planet.draw();
+		this.hud.update(dt);
 		this.ecs.update(dt);
 		this.ecs.draw(dt);
 		Camera.update();
@@ -211,9 +208,11 @@ class Game extends hxd.App {
 	private function kill(ev:IEvent) {
 		var e = ev.entity;
 		var ef:FSMComponent = cast e.get(FSM);
-		if (ef.state.match(Player(Play)))
+		if (ef.state.match(Player(Play))) {
+			if (Config.settings.nodie)
+				return;
 			ef.next_state = Player(Die);
-		else
+		} else
 			this.killNPC(ev);
 	}
 

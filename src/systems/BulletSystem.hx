@@ -58,6 +58,7 @@ class BulletSystem extends System implements ISystem
 
 	public override function update(dt:Float)
 	{
+		
 		for ( e in this.targets )
 		{
 			var bd:DrawComponent = cast e.get(Draw);

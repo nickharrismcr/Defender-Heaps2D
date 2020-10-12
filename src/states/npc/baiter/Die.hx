@@ -17,6 +17,7 @@ class Die implements IState {
 		tc.mark = tc.t + 1 + 2 * hxd.Math.random();
 		e.removeComponent(Draw);
 		e.removeComponent(Collide);
+		e.removeComponent(Shootable);
 		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(Baiter)));
 	}
 

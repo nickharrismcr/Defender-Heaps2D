@@ -6,7 +6,8 @@ class Config
         bullet_time:2,
         world_width:12000,
         grab_speed:80,
-        play_area_start:200
+        play_area_start:200,
+        nodie:true
     };
 
     public static var keys = {

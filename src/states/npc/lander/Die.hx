@@ -19,6 +19,7 @@ class Die implements IState {
 		e.removeComponent(Draw);
 		e.removeComponent(Collide);
 		e.removeComponent(RadarDraw);
+		e.removeComponent(Shootable);
 		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(c.state.match(Lander(Mutant)) ? Mutant : Lander)));
 
 		var hf:HumanFinderComponent = cast e.get(HumanFinder);
