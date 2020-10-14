@@ -17,6 +17,7 @@ class Logger {
 	}
 
 	private function log(str:String, level:Levels, pos:haxe.PosInfos) {
+	
 		if (cast(Logging.level, Int) <= cast(level, Int)) {
 			var dt = Date.now().toString();
 			var fn = pos.fileName;

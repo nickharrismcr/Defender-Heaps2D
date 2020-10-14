@@ -36,10 +36,8 @@ class LaserSystem extends System implements ISystem {
 	}
 
 	public function fire(firer:PosComponent) {
-
-		if ( this.engine.getEntitiesWithComponent(Laser).length > 8 ) return;
-
-		Logging.trace('fire Laser from ${firer.x},${firer.y}');
+		if (this.engine.getEntitiesWithComponent(Laser).length > 8)
+			return;
 		var e = new Entity();
 		var p = new PosComponent();
 		p.x = firer.x + firer.direction * 80;
@@ -60,24 +58,30 @@ class LaserSystem extends System implements ISystem {
 	}
 
 	public override function update(dt:Float) {
-		
-		for (e in this.targets) {
+		var ww = Config.settings.world_width;
 
-			// TODO player travelling left not working
+		for (e in this.targets) {
 			var lc:LaserComponent = cast e.get(Laser);
-			lc.length += 800 * dt;
+			lc.length += 1800 * dt;
 			var pos:PosComponent = cast e.get(Pos);
-			pos.x+=pos.direction * Math.abs(e.engine.game.player_pos.dx) * dt;
+			pos.x += pos.direction * Math.abs(e.engine.game.player_pos.dx) * dt;
 			lc.bounds.x = pos.x;
 			lc.bounds.y = pos.y;
-			lc.bounds.width = lc.length;
+			lc.bounds.width = lc.length * lc.dir;
 			lc.bounds.height = 2;
 
 			// collisions
 			// TODO handle world wraparound
 			for (other in this.engine.getEntitiesWithComponent(Shootable)) {
 				var od:DrawComponent = cast other.get(Draw);
-				if (od.drawable.getBounds().intersects(lc.bounds)) {
+				var ob = od.drawable.getBounds();
+				ob.x = ob.x + Camera.position;
+				if (ob.x < 0)
+					ob.x += ww;
+				if (ob.x > ww)
+					ob.x -= ww;
+
+				if (ob.intersects(lc.bounds)) {
 					this.engine.removeEntity(e);
 					MessageCentre.notify(new KilledEvent(other));
 				}

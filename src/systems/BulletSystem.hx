@@ -38,7 +38,7 @@ class BulletSystem extends System implements ISystem
 	{
 		if (this.engine.game.freeze ) return;
 
-		Logging.trace('fire bullet from ${firer.x},${firer.y} to ${target.x},${target.y}');
+		
 		var e = new Entity();
 		e.addComponent(new TimerComponent());
 		var p = new PosComponent();
@@ -49,6 +49,7 @@ class BulletSystem extends System implements ISystem
 		var vec = Utils.getBulletVector(firer,target,time);
 		p.dx = vec.x;
 		p.dy = vec.y;
+		Logging.debug('fire bullet from ${firer.x},${firer.y} to ${target.x},${target.y} : ${p.dx},${p.dy}');
 		e.addComponent(p);
 		e.addComponent( new BulletComponent());
 		e.addComponent( new LifeComponent(4));

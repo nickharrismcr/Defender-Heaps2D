@@ -1,14 +1,11 @@
-import components.update.ShootableComponent;
 import ecs.Entity;
 import ecs.Engine;
-import components.update.CollideComponent;
 import components.update.StarComponent;
 import components.update.TimerComponent;
 import components.update.PosComponent;
 import components.update.HumanComponent;
 import components.update.HumanFinderComponent;
 import components.update.LifeComponent;
-import components.update.PlayerComponent;
 import components.draw.RadarDrawComponent;
 import components.draw.DrawComponent;
 import fsm.FSMComponent;
@@ -60,7 +57,7 @@ class Factory {
 				e.addComponent(new PosComponent());
 				e.addComponent(new FSMComponent(Baiter(Materialize)));
 				e.addComponent(new TimerComponent());
-				
+
 				this.ecs.addEntity(e);
 			}
 		};
@@ -75,7 +72,7 @@ class Factory {
 				e.addComponent(new FSMComponent(Lander(Materialize)));
 				e.addComponent(new TimerComponent());
 				e.addComponent(new HumanFinderComponent());
-				
+
 				this.ecs.addEntity(e);
 			}
 		};

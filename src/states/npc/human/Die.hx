@@ -18,6 +18,7 @@ class Die implements IState {
 		e.removeComponent(Draw);
 		e.removeComponent(RadarDraw);
 		e.removeComponent(Collide);
+		e.removeComponent(Shootable);
 		e.addComponent(new DrawDisperseComponent(GFX.getDisperse(Human)));
 	}
 

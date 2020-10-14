@@ -43,7 +43,7 @@ class LaserDrawSystem extends System implements ISystem {
 			var lc:LaserComponent = cast e.get(Laser);
 
 			this.gfx.beginFill(lc.color.toColor());
-			this.gfx.drawRect(pc.x-Camera.position, pc.y, lc.length, 2);
+			this.gfx.drawRect(pc.x-Camera.position, pc.y, lc.length*lc.dir, 2);
 			this.gfx.endFill();
 		}
 	}

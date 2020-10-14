@@ -52,7 +52,7 @@ class Search implements IState {
 			}
 		}
 
-		if (Math.abs(pc.x - Camera.position) < e.engine.game.s2d.width) {
+		if (e.engine.game.onScreen(pc.x)) {  
 			if (Std.random(600) < 3) {
 				MessageCentre.notify(new FireBulletEvent(e, pc, e.engine.game.player_pos));
 			}

@@ -1,6 +1,5 @@
 import components.update.HumanFinderComponent;
 import components.update.PlayerComponent;
-import haxe.ds.Vector;
 import event.events.HumanSaved.HumanSavedEvent;
 import event.events.HumanLanded.HumanLandedEvent;
 import event.events.HumanPlaced.HumanPlacedEvent;
@@ -58,11 +57,11 @@ class Game extends hxd.App {
 	}
 
 	public override function init() {
-		// Logging.level = DEBUG;
+		Logging.level = DEBUG;
 		#if !debug
 		var win = hxd.Window.getInstance();
 		win.displayMode = Fullscreen;
-		Logging.level = ERROR;
+		Logging.level = DEBUG;
 		#end
 
 		Camera.position = Config.settings.world_width / 2;
@@ -152,7 +151,7 @@ class Game extends hxd.App {
 		this.landers += 20;
 		var f = this.factory.addLandersFunc(this.landers);
 		this.ecs.schedule(1, f);
-		var f = this.factory.addHumansFunc(20);
+		var f = this.factory.addHumansFunc(15);
 		this.ecs.schedule(1, f);
 		var f = this.factory.addStarsFunc(50);
 		this.ecs.schedule(0.1, f);
@@ -169,6 +168,11 @@ class Game extends hxd.App {
 
 	public function mountainAt(pos:Int):Int {
 		return this.planet.at(pos);
+	}
+
+	public function onScreen(pos:Float):Bool{
+		var tp = pos - Camera.position; 
+		return ( tp > 0 && tp < s2d.width);
 	}
 
 	public override function update(dt:Float) {

@@ -54,13 +54,14 @@ class DrawSystem extends System implements ISystem
 		{
 			var p:PosComponent = cast e.get(Pos);
 			var d:DrawComponent = cast e.get(Draw);
-			var posx=p.x;
+			var b = d.drawable.getBounds();
+			var posx=p.x; 
 			if ( Camera.position < sw && p.x > ww - sw )
 				posx=posx-ww;
 			if ( Camera.position > ww - sw && p.x <  sw )
 				posx=posx+ww;
 
-			d.drawable.setPosition(posx-Camera.position,p.y);
+			d.drawable.setPosition(posx-Camera.position-b.width/2,p.y-b.height/2);
 			d.drawable.scaleX = if (d.flip) -1 else 1;
 			
 			#if debug
