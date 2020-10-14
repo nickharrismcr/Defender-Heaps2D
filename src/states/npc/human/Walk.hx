@@ -29,7 +29,13 @@ class Walk implements IState {
 		pc.dx = 0;
 	}
 
-	public function update(c:FSMComponent, e:Entity, dt:Float) {}
+	public function update(c:FSMComponent, e:Entity, dt:Float) {
+
+		var pos:PosComponent = cast e.get(Pos);
+		pos.x += 10*dt;
+		pos.y = e.engine.game.s2d.height - e.engine.game.mountainAt(Std.int(pos.x));
+
+	}
 
 	public function exit(c:FSMComponent, e:Entity, dt:Float) {}
 }

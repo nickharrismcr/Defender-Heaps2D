@@ -18,7 +18,7 @@ class Search implements IState {
 
 	public function enter(c:FSMComponent, e:Entity, dt:Float) {
 		e.addComponent(new CollideComponent());
-		e.addComponent(new ShootableComponent());	
+		e.addComponent(new ShootableComponent());
 		var pc:PosComponent = cast e.get(Pos);
 		pc.dx = Std.random(2) == 1 ? -100 : 100;
 		if (Std.random(2) == 1)
@@ -47,12 +47,15 @@ class Search implements IState {
 		if (fc.target_id != null) {
 			var te = e.engine.getEntity(fc.target_id);
 			var tp:PosComponent = cast te.get(Pos);
-			if (Math.abs(tp.x - (pc.x + 15)) < 2) {
+			if (Math.abs(tp.x - (pc.x-20)) < 2) {
 				c.next_state = Lander(Pounce);
+				if (e.engine.game.onScreen(pc.x)) {
+					MessageCentre.notify(new FireBulletEvent(e, pc, e.engine.game.player_pos));
+				}
 			}
 		}
 
-		if (e.engine.game.onScreen(pc.x)) {  
+		if (e.engine.game.onScreen(pc.x)) {
 			if (Std.random(600) < 3) {
 				MessageCentre.notify(new FireBulletEvent(e, pc, e.engine.game.player_pos));
 			}

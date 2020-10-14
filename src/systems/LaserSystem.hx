@@ -62,7 +62,8 @@ class LaserSystem extends System implements ISystem {
 
 		for (e in this.targets) {
 			var lc:LaserComponent = cast e.get(Laser);
-			lc.length += 1800 * dt;
+			if ( lc.length < e.engine.game.s2d.width )
+				lc.length += 1800 * dt;
 			var pos:PosComponent = cast e.get(Pos);
 			pos.x += pos.direction * Math.abs(e.engine.game.player_pos.dx) * dt;
 			lc.bounds.x = pos.x;
@@ -71,19 +72,23 @@ class LaserSystem extends System implements ISystem {
 			lc.bounds.height = 2;
 
 			// collisions
+			// TODO reverse dir checks not working
 			// TODO handle world wraparound
 			for (other in this.engine.getEntitiesWithComponent(Shootable)) {
-				var od:DrawComponent = cast other.get(Draw);
-				var ob = od.drawable.getBounds();
-				ob.x = ob.x + Camera.position;
-				if (ob.x < 0)
-					ob.x += ww;
-				if (ob.x > ww)
-					ob.x -= ww;
+				var op:PosComponent = cast other.get(Pos);
+				if ( e.engine.game.onScreen(op.x)) {
+					var od:DrawComponent = cast other.get(Draw);
+					var ob = od.drawable.getBounds();
+					ob.x = ob.x + Camera.position;
+					if (ob.x < 0)
+						ob.x += ww;
+					if (ob.x > ww)
+						ob.x -= ww;
 
-				if (ob.intersects(lc.bounds)) {
-					this.engine.removeEntity(e);
-					MessageCentre.notify(new KilledEvent(other));
+					if (ob.intersects(lc.bounds)) {
+						this.engine.removeEntity(e);
+						MessageCentre.notify(new KilledEvent(other));
+					}
 				}
 			}
 		}
