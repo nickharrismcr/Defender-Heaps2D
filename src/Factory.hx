@@ -36,6 +36,16 @@ class Factory {
 		this.ecs.addEntity(e);
 	}
 
+	public function addGame() {
+
+		var e = new Entity();
+		var fc = new FSMComponent(Game(LevelStart));
+		e.addComponent(fc);
+		var tc = new TimerComponent();
+		e.addComponent(tc);
+		this.ecs.addEntity(e);
+	}
+
 	public function addPlayerFunc() {
 		return () -> {
 			var e = new Entity();

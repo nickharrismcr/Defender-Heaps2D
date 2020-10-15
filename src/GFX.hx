@@ -88,7 +88,7 @@ class GFX {
 
 	public static function loadfont() {
 		var fontTex = GFX.toTexture('font.png');
-		GFX.fontTiles = h2d.Tile.fromTexture(fontTex).gridFlatten(28);
+		GFX.fontTiles = h2d.Tile.fromTexture(fontTex).gridFlatten(30);
 	}
 
 	public static function getFontBitmap(char:String):h2d.Bitmap {

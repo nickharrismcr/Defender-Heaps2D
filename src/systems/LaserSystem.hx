@@ -66,9 +66,9 @@ class LaserSystem extends System implements ISystem {
 				lc.length += 1800 * dt;
 			var pos:PosComponent = cast e.get(Pos);
 			pos.x += pos.direction * Math.abs(e.engine.game.player_pos.dx) * dt;
-			lc.bounds.x = pos.x;
+			lc.bounds.x = pos.x - (lc.dir == -1 ? lc.length :  0 );
 			lc.bounds.y = pos.y;
-			lc.bounds.width = lc.length * lc.dir;
+			lc.bounds.width = lc.length;
 			lc.bounds.height = 2;
 
 			// collisions
@@ -87,7 +87,7 @@ class LaserSystem extends System implements ISystem {
 
 					if (ob.intersects(lc.bounds)) {
 						this.engine.removeEntity(e);
-						MessageCentre.notify(new KilledEvent(other));
+						MessageCentre.notify(new KilledEvent(other)); 
 					}
 				}
 			}

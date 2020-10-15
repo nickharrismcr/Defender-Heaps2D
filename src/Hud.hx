@@ -2,36 +2,59 @@ import haxe.iterators.StringKeyValueIteratorUnicode;
 
 class Hud {
 	var gfx:h2d.Graphics;
-    var s2d:h2d.Scene;
-    var score:String;
-    var scoreBMPs:Array<h2d.Bitmap>;
-    var scoreCol:h3d.Vector;
-    var cycle:(c:h3d.Vector,dt:Float)->Void; 
-    
+	var s2d:h2d.Scene;
+	var score:String;
+	var scoreBMPs:Array<h2d.Bitmap>;
+	var scoreCol:h3d.Vector;
+	var cycle:(c:h3d.Vector, dt:Float) -> Void;
+    var text:String;
+    var textBMPs:Array<h2d.Bitmap>;
+
 	public function new(s2d:h2d.Scene) {
 		this.s2d = s2d;
-        this.gfx = new h2d.Graphics(s2d);
-        this.scoreBMPs = new Array<h2d.Bitmap>();
-        this.score = ".......";
-        this.updateScore("0000000");
-        this.scoreCol = new h3d.Vector(1,1,1,1);
+		this.gfx = new h2d.Graphics(s2d);
+		this.scoreBMPs = new Array<h2d.Bitmap>();
+		this.score = ".......";
+		this.updateScore("0123456");
+		this.scoreCol = new h3d.Vector(1, 1, 1, 1);
         this.cycle = Utils.getColorCycleGenerator(0.5);
-    }
-    
-    public function updateScore(newScore:String){
-        var i=0;
-        for ( bmp in this.scoreBMPs) {
-            this.s2d.removeChild(bmp);
-        }
-        for ( i in 0...newScore.length ){
-          
-            var bmp = GFX.getFontBitmap(newScore.charAt(i));
-            bmp.setPosition(i*30,30);
-            this.s2d.addChild(bmp);
-            this.scoreBMPs[i]=bmp; 
-        }
+        this.text = "";
+        this.textBMPs = new Array<h2d.Bitmap>();
+	}
+
+	public function updateScore(newScore:String) {
+		var i = 0;
+		for (bmp in this.scoreBMPs) {
+			this.s2d.removeChild(bmp);
+		}
+		for (i in 0...newScore.length) {
+			var bmp = GFX.getFontBitmap(newScore.charAt(i));
+			bmp.setPosition(i * 30, 30);
+			this.s2d.addChild(bmp);
+			this.scoreBMPs[i] = bmp;
+		}
+	}
+
+	public function addText(str:String) {
+        var y = this.s2d.height/2;
+        var x = this.s2d.width/2 - (str.length*30)/2;
+        for (i in 0...str.length) {
+			var c = str.charAt(i);
+			if ( c != " ") {
+				var bmp = GFX.getFontBitmap(c);
+				bmp.setPosition( x+i*30, y );
+				this.s2d.addChild(bmp);
+				this.textBMPs.push(bmp);
+			}
+			
+		}
     }
 
+	public function clearText() {
+        for (bmp in this.textBMPs) {
+            this.s2d.removeChild(bmp);
+        }
+    }
 
 	public function update(dt:Float) {
 		var sw = s2d.width;
@@ -52,14 +75,17 @@ class Hud {
 		this.gfx.beginFill(0xffffff);
 		this.gfx.drawRect((sw / 2) - (rsw / 2), 0, rsw, 3);
 		this.gfx.drawRect((sw / 2) - (rsw / 2), rye + 17, rsw, 3);
-        this.gfx.endFill();
-        
-        this.scoreCol.r = Math.random();
-        this.scoreCol.g = Math.random();
-        this.scoreCol.b = Math.random();
-        this.cycle(this.scoreCol,dt);
-        for ( bmp in this.scoreBMPs) {
-            bmp.color = scoreCol;
+		this.gfx.endFill();
+
+		this.scoreCol.r = Math.random();
+		this.scoreCol.g = Math.random();
+		this.scoreCol.b = Math.random();
+		this.cycle(this.scoreCol, dt);
+		for (bmp in this.scoreBMPs) {
+			bmp.color = scoreCol;
         }
+        for (bmp in this.textBMPs) {
+			bmp.color = scoreCol;
+		}
 	}
 }

@@ -1,5 +1,4 @@
-import components.update.HumanFinderComponent;
-import components.update.PlayerComponent;
+
 import event.events.HumanSaved.HumanSavedEvent;
 import event.events.HumanLanded.HumanLandedEvent;
 import event.events.HumanPlaced.HumanPlacedEvent;
@@ -9,14 +8,17 @@ import states.npc.baiter.Die;
 import states.npc.lander.Materialize;
 import states.npc.lander.Search;
 import states.npc.lander.Die;
+import states.npc.human.Rescued;
 import states.player.Play;
 import states.player.Die;
-import states.player.Explode;
+import states.game.LevelStart;
+import states.game.Level;
+import states.game.LevelEnd;
+import states.game.GameOver;
 import components.update.PosComponent;
 import fsm.StateTree;
 import fsm.FSMSystem;
 import fsm.FSMComponent;
-import ecs.Entity;
 import ecs.Engine;
 import systems.DrawDisperseSystem;
 import systems.DrawSystem;
@@ -42,15 +44,17 @@ class Game extends hxd.App {
 	public var player_pos:PosComponent;
 	public var freeze:Bool;
 	public var factory:Factory;
+	public var landers_killed:Int = 0;
+	public var hud:Hud;
 
 	var ecs:ecs.Engine;
 	var app:hxd.App;
 	var graphics:GFX;
 	var planet:Planet;
 	var landers:Int = 0;
-	var landers_killed:Int = 0;
+	
 	var tf:h2d.Text;
-	var hud:Hud;
+	
 
 	public function new() {
 		super();
@@ -97,10 +101,14 @@ class Game extends hxd.App {
 		fsm_sys.register(new states.npc.human.Walk());
 		fsm_sys.register(new states.npc.human.Grabbed());
 		fsm_sys.register(new states.npc.human.Falling());
+		fsm_sys.register(new states.npc.human.Rescued());
 		fsm_sys.register(new states.npc.human.Die());
 		fsm_sys.register(new states.player.Play());
 		fsm_sys.register(new states.player.Die());
-		fsm_sys.register(new states.player.Explode());
+		fsm_sys.register(new states.game.LevelStart());
+		fsm_sys.register(new states.game.Level());
+		fsm_sys.register(new states.game.LevelEnd());
+		fsm_sys.register(new states.game.GameOver());
 
 		var stree = new StateTree();
 
@@ -124,35 +132,36 @@ class Game extends hxd.App {
 		stree.addTransition(Human(Grabbed), Human(Falling));
 		stree.addTransition(Human(Falling), Human(Die));
 		stree.addTransition(Human(Falling), Human(Walk));
+		stree.addTransition(Human(Falling), Human(Rescued));
+		stree.addTransition(Human(Rescued), Human(Walk));
 
 		stree.addTransition(Player(Play), Player(Die));
 		stree.addTransition(Player(Die), Player(Explode));
 		stree.addTransition(Player(Explode), Player(Play));
 
+		stree.addTransition(Game(LevelStart), Game(Level));
+		stree.addTransition(Game(Level), Game(LevelEnd));
+		stree.addTransition(Game(LevelEnd), Game(GameOver));
+		stree.addTransition(Game(LevelEnd), Game(LevelStart));
+
 		fsm_sys.setStateTree(stree);
 		this.ecs.addUpdateSystem(fsm_sys);
+		this.factory.addGame();
 
 		MessageCentre.register(FireBullet, bullet_sys.fireEvent);
 		MessageCentre.register(Killed, this.kill);
 		MessageCentre.register(HumanLanded, this.score250);
 		MessageCentre.register(HumanSaved, this.score500);
+		MessageCentre.register(HumanSaved, this.saveHuman);
 		MessageCentre.register(HumanPlaced, this.score500);
 		MessageCentre.register(PlayerExplode, this.triggerExplodeParticles);
 		MessageCentre.register(FireLaser, laser_sys.fireEvent);
+		MessageCentre.register(LevelStart, this.levelStart);
+		MessageCentre.register(LevelEnd, this.levelEnd);
 
 		GFX.init(this.s2d);
 		this.hud = new Hud(this.s2d);
 		this.planet = new Planet(s2d);
-
-		var f = this.factory.addPlayerFunc();
-		this.ecs.schedule(0.1, f);
-		// var f=this.factory.addBaiters(1);
-		// this.ecs.schedule(4,f);
-		this.landers += 20;
-		var f = this.factory.addLandersFunc(this.landers);
-		this.ecs.schedule(1, f);
-		var f = this.factory.addHumansFunc(15);
-		this.ecs.schedule(1, f);
 		var f = this.factory.addStarsFunc(50);
 		this.ecs.schedule(0.1, f);
 
@@ -170,13 +179,13 @@ class Game extends hxd.App {
 		return this.planet.at(pos);
 	}
 
-	public function onScreen(pos:Float):Bool{
-		var tp = pos - Camera.position; 
-		return ( tp > 0 && tp < s2d.width);
+	public function onScreen(pos:Float):Bool {
+		var tp = pos - Camera.position;
+		return (tp > 0 && tp < s2d.width);
 	}
 
 	public override function update(dt:Float) {
-		if (this.planet != null)
+		if (this.planet != null )
 			this.planet.draw();
 		this.hud.update(dt);
 		this.ecs.update(dt);
@@ -191,7 +200,7 @@ class Game extends hxd.App {
 
 	private function debugUpdate(dt:Float) {
 		var fps = Std.int(1 / dt);
-		this.tf.text = '${fps}  ${Std.int(Camera.position)}';
+		this.tf.text = '${fps}  ${Std.int(Camera.position)} ${this.landers_killed}';
 	}
 
 	private function triggerExplodeParticles(ev:IEvent) {
@@ -233,23 +242,38 @@ class Game extends hxd.App {
 			case _:
 		}
 	}
+	private function levelEnd(ev:IEvent) {
+		this.planet.hide();	
+	}
+
+	private function levelStart(ev:IEvent) {
+		this.planet.show();	
+	}
+	
+	private function saveHuman(ev:IEvent) {
+		var ev:HumanSavedEvent = cast ev;
+		var ef:FSMComponent = cast ev.entity.get(FSM);
+		ef.next_state = Human(Rescued);
+	}
 
 	private function score250(ev:IEvent) {
 		var ev:HumanLandedEvent = cast ev;
-		this.factory.addScore(250, ev.pos.x, ev.pos.y, 0, 0);
+		var ppc = this.player_pos;
+		this.factory.addScore(250, ev.pos.x, ev.pos.y, ppc.dx, 0);
 	}
 
 	private function score500(ev:IEvent) {
+		var ppc = this.player_pos;
 		switch (ev.type) {
 			case HumanSaved:
 				{
 					var ev:HumanSavedEvent = cast ev;
-					this.factory.addScore(500, ev.pos.x, ev.pos.y, 0, 0);
+					this.factory.addScore(500, ev.pos.x, ev.pos.y, ppc.dx, 0);
 				}
 			case HumanPlaced:
 				{
 					var ev:HumanPlacedEvent = cast ev;
-					this.factory.addScore(500, ev.pos.x, ev.pos.y, 0, 0);
+					this.factory.addScore(500, ev.pos.x, ev.pos.y, ppc.dx, 0);
 				}
 			case _:
 				{}

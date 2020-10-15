@@ -16,7 +16,7 @@ class Pounce implements IState {
 	public function enter(c:FSMComponent, e:Entity, dt:Float) {
 		var pc:PosComponent = cast e.get(Pos);
 		pc.dx = 0;
-		pc.dy = Config.settings.grab_speed;
+		pc.dy = Config.getGrabSpeed();
 	}
 
 	public function update(c:FSMComponent, e:Entity, dt:Float) {

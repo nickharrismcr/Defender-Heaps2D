@@ -1,6 +1,8 @@
 
 enum EventType
 {
+    LevelStart;
+    LevelEnd;
     FireBullet;
     FireLaser;
     Killed;
@@ -63,7 +65,7 @@ enum States
 enum GameStates
 {
     LevelStart;
-    Play;
+    Level;
     LevelEnd;
     GameOver;
 }

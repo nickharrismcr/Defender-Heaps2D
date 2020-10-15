@@ -14,6 +14,7 @@ class Die implements IState {
 	public function new() {}
 
 	public function enter(c:FSMComponent, e:Entity, dt:Float) {
+		e.engine.game.landers_killed++;
 		var tc:TimerComponent = cast e.get(Timer);
 		tc.mark = tc.t + 1 + 2 * hxd.Math.random();
 		e.removeComponent(Draw);

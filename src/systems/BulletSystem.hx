@@ -45,7 +45,7 @@ class BulletSystem extends System implements ISystem
 		p.x = firer.x; 
 		p.y = firer.y;
 		p.kill_off_screen = true;
-		var time = Config.settings.bullet_time;
+		var time = Config.getBulletTime();
 		var vec = Utils.getBulletVector(firer,target,time);
 		p.dx = vec.x;
 		p.dy = vec.y;

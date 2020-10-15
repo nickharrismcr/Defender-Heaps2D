@@ -57,7 +57,7 @@ class Play implements IState
 		}
 	 
 		if ( hxd.Key.isDown( Config.keys.thrust )) {
-			if ( Math.abs(pos.dx) < 1000 ){
+			if ( Math.abs(pos.dx) < 2000 ){
 				pos.dx += ( 500 * pos.direction * dt ) ;
 			}
 		} else {
