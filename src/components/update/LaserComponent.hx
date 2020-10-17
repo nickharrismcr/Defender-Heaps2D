@@ -16,6 +16,9 @@ class LaserComponent implements IComponent
     public function new()
     {
         this.gaps = new Array<Array<Int>>();
+        for ( i in 0...10){
+            this.gaps.push([0,0]);
+        }
         this.bounds = new h2d.col.Bounds();
     }    
 }

@@ -15,6 +15,13 @@ class Utils {
 		return v;
 	}
 
+	public static function fsign(v:Float):Int{
+		if ( Math.abs(v) < 10 ) return 0;
+		if ( v < 0) return -1;
+		if ( v > 0 ) return 1;
+		return 0;
+	}
+
 	public static function rand_col():h3d.Vector {
 		var r = hxd.Math.random();
 		var g = hxd.Math.random();

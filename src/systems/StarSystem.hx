@@ -36,16 +36,16 @@ class StarSystem extends System implements ISystem {
 			var s:StarComponent = cast e.get(Star);
 			var p:PosComponent = cast e.get(Pos);
 
-			s.bmp.setPosition(p.x - Camera.position / 4, p.y);
+			s.bmp.setPosition(p.screen_x/2, p.y);
 
 			if (t.t > t.mark) {
 				t.mark = t.t + 1 + hxd.Math.random(3);
-				p.x = -200 + Std.random(Std.int(scene.width + 400)) + Camera.position / 4;
+				p.x = Std.random(Config.settings.world_width);
 				p.y = Utils.random(Config.settings.play_area_start, Std.int(scene.height * 0.75));
 				s.col = Utils.rand_col();
 				s.bmp.setPosition(p.x, p.y);
 				s.bmp.color = s.col;
 			}
 		}
-	}
+	} 
 }
