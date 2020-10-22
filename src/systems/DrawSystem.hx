@@ -16,6 +16,9 @@ import Camera;
 class DrawSystem extends System implements ISystem
 {
 
+	var cycle_func:(h3d.Vector, Float) -> Void;
+	var cycle_color:h3d.Vector;
+
 	public function new( )
 	{
 		super( );
@@ -23,6 +26,8 @@ class DrawSystem extends System implements ISystem
 		this.filter=new Filter();
 		filter.add(Draw); 
 		filter.add(Pos);
+		this.cycle_func = Utils.getColorCycleGenerator(0.05);
+		this.cycle_color = new h3d.Vector();
 	}
 
 	public override function onAddEntity(e:Entity)
@@ -49,6 +54,7 @@ class DrawSystem extends System implements ISystem
 	{
 		var sw = this.engine.game.s2d.width;
 		var ww = Config.settings.world_width;
+		this.cycle_func(this.cycle_color,dt);
 
 		for ( e in this.targets )
 		{
@@ -61,6 +67,9 @@ class DrawSystem extends System implements ISystem
 			if ( Camera.position > ww - sw && p.x <  sw )
 				posx=posx+ww;
 
+			if ( d.cycle ){
+				d.drawable.color = this.cycle_color;
+			}
 			d.drawable.setPosition(posx-Camera.position-b.width/2,p.y-b.height/2);
 			d.drawable.scaleX = if (d.flip) -1 else 1;
 			

@@ -2,7 +2,7 @@ import hxd.Key;
 
 class Config {
 	public static var settings = {
-		world_width: 12000,
+		world_width: 15000,
 		play_area_start: 200,
 		nodie: true
 	};

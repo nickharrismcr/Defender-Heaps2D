@@ -6,6 +6,8 @@ class Planet {
 	var scene:h2d.Scene;
 	var graphics:h2d.Graphics;
 	var visible:Bool = true;
+	var colors:Array<Int>;
+	var dimcolors:Array<Int>;
 
 	public function new(scene:Scene) {
 		this.scene = scene;
@@ -14,6 +16,7 @@ class Planet {
 		var h:Int = 20;
 		var maxh:Int = Std.int(scene.height / 4);
 		var dh:Int = 4;
+		this.colors = [ Utils.red.toColor(), Utils.orange.toColor(), Utils.green.toColor(), Utils.blue.toColor() ];
 
 		var i = 0;
 		var x = 0;
@@ -51,16 +54,25 @@ class Planet {
 	}
 
 	public function draw() {
+		var prevcol:Int = -1;
 		this.graphics.clear();
 		if (!this.visible)
 			return;
-		this.graphics.beginFill(0x994400);
 		var x = 0;
 		var i = Std.int(Camera.position / 4);
 		var step = 4;
 		var ww = Config.settings.world_width;
-
+		
+		
+		
 		while (x < this.scene.width) {
+
+			var col = Std.int(4*(Camera.position+x)/ww);
+			if ( col != prevcol ){
+				this.graphics.endFill();
+				this.graphics.beginFill(this.colors[col%4]);
+				prevcol = col;
+			}
 			i++;
 			if (i >= this.mountain.length)
 				i -= this.mountain.length;
@@ -69,6 +81,8 @@ class Planet {
 			x += step;
 			this.graphics.drawRect(x, this.scene.height - this.mountain[i], 4, 4);
 		}
+		this.graphics.endFill();
+
 
 		var sw = this.scene.width;
 		var sh = this.scene.height;
@@ -81,14 +95,22 @@ class Planet {
 
 		i = Std.int(Camera.position - (ww / 2) + sw / 2);
 		x = 0;
+		prevcol=-1;
 
 		while (x < ww) {
-			x += 30;
-			i += 30;
+			x += 40;
+			i += 40;
 			if (i < 0)
 				i += ww;
 			if (i > ww)
 				i -= ww;
+
+			var col = Std.int(4*i/ww);
+			if ( col != prevcol ){
+				this.graphics.endFill();
+				this.graphics.beginFill(this.colors[col%4]);
+				prevcol = col;
+			}
 			this.graphics.drawRect(rxs + rw * (x / ww), rye - (this.at(i) * (rye / sh)), 2, 2);
 		}
 

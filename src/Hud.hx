@@ -68,8 +68,9 @@ class Hud {
 
 		this.gfx.clear();
 		this.gfx.beginFill(0x000099);
-		this.gfx.drawRect(0, rye + 20, sw, 3);
+		this.gfx.drawRect(0, rye + 20, rxs-20, 3);
 		this.gfx.drawRect(rxs - 20, 0, 3, rye + 20);
+		this.gfx.drawRect(rxe + 20, rye + 20, sw, 3);
 		this.gfx.drawRect(rxe + 20, 0, 3, rye + 20);
 		this.gfx.endFill();
 		this.gfx.beginFill(0xffffff);

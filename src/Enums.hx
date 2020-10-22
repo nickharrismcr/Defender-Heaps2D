@@ -1,4 +1,5 @@
 
+
 enum EventType
 {
     LevelStart;
@@ -31,6 +32,12 @@ enum ComponentType
     Player;
     Laser;
     Shootable;
+}
+
+enum BulletType
+{
+    Bullet;
+    Bomb;
 }
 
 enum SystemType 

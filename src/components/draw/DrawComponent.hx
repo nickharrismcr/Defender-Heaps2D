@@ -12,6 +12,7 @@ class DrawComponent implements IComponent
     public var drawable:h2d.Anim;
     public var text:h2d.Text;
     public var flip:Bool;
+    public var cycle:Bool;
 
     public function new(anim:h2d.Anim)
     {
@@ -19,5 +20,6 @@ class DrawComponent implements IComponent
         var font : h2d.Font = hxd.res.DefaultFont.get();
         this.text = new h2d.Text(font);
         this.flip = false;
+        this.cycle = false;
     }    
 }

@@ -1,3 +1,5 @@
+import haxe.ds.Vector;
+import haxe.iterators.StringKeyValueIteratorUnicode;
 import components.update.PosComponent;
 
 class Utils {
@@ -6,6 +8,7 @@ class Utils {
 	public static var blue = new h3d.Vector(0, 0, 1, 1);
 	public static var yellow = new h3d.Vector(1, 1, 0, 1);
 	public static var cyan = new h3d.Vector(0, 1, 1, 1);
+	public static var orange = new h3d.Vector(1,0.5,0,1);
 
 	public static function clamp(v:Float, min:Float, max:Float):Float {
 		if (v < min)
