@@ -61,7 +61,7 @@ class DrawSystem extends System implements ISystem
 			var p:PosComponent = cast e.get(Pos);
 			var d:DrawComponent = cast e.get(Draw);
 			var b = d.drawable.getBounds();
-			 
+			if ( e.engine.game.freeze ) p.y = -1000;
 			d.drawable.setPosition(p.screen_x-b.width/2,p.y-b.height/2);
 			d.drawable.scaleX = if (d.flip) -1 else 1;
 			

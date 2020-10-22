@@ -12,6 +12,7 @@ class LevelStart implements IState {
 
 	public function enter(c:FSMComponent, e:Entity, dt:Float) {
 		MessageCentre.notify(new LevelStartEvent());
+		e.engine.game.landers_killed = 0;
 	}
 
 	public function update(c:FSMComponent, e:Entity, dt:Float) {

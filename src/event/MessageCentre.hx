@@ -25,6 +25,7 @@ class MessageCentre {
 	public static function notify(e:IEvent) {
 		if (MessageCentre.listeners.exists(e.type)) {
 			for (h in MessageCentre.listeners[e.type]) {
+				Logging.trace('Event ${e.type}');
 				h(e);
 			}
 		}

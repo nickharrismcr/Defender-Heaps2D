@@ -1,0 +1,1 @@
+stargate win32 conversion in ../defcon_src 

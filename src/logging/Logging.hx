@@ -74,9 +74,9 @@ class Logging {
 	}
 
 	public static inline function trace(s:String, ?pos:haxe.PosInfos) {
-		#if debug
+		//#if debug
 		Logging.logger.trace(s, pos);
-		#end
+		//#end
 	}
 
 	public static inline function debug(s:String, ?pos:haxe.PosInfos) {

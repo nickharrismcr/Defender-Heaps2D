@@ -10,7 +10,7 @@ class Config {
 	public static var levels = {
 		level: 0,
 		humans: 20,
-		landers: [18, 21, 24, 27, 30, 30, 30, 30, 30],
+		landers: [3,18, 21, 24, 27, 30, 30, 30, 30, 30],
 		baiters: [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4],
 		pods: [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4],
 		bombers: [0, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7],

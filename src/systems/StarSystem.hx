@@ -35,7 +35,7 @@ class StarSystem extends System implements ISystem {
 			var t:TimerComponent = cast e.get(Timer);
 			var s:StarComponent = cast e.get(Star);
 			var p:PosComponent = cast e.get(Pos);
-
+			if ( e.engine.game.freeze ) p.y = -1000;
 			s.bmp.setPosition(p.screen_x/2, p.y);
 
 			if (t.t > t.mark) {

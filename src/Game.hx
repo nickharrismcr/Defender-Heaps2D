@@ -66,7 +66,7 @@ class Game extends hxd.App {
 		#if !debug
 		var win = hxd.Window.getInstance();
 		win.displayMode = Fullscreen;
-		Logging.level = DEBUG;
+		Logging.level = TRACE;
 		#end
 
 		Camera.position = Config.settings.world_width / 2;
@@ -244,11 +244,13 @@ class Game extends hxd.App {
 		}
 	}
 	private function levelEnd(ev:IEvent) {
+		this.freeze = true;
 		this.planet.hide();	
 	}
 
 	private function levelStart(ev:IEvent) {
 		this.planet.show();	
+		this.freeze = false;
 	}
 	
 	private function saveHuman(ev:IEvent) {

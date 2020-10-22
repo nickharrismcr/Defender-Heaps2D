@@ -7,7 +7,9 @@ import fsm.FSMComponent;
  
 
 class Level implements IState {
+
 	public var state:States = Game(Level);
+	var lander_delay:Int = 1;
 
 	public function new() {}
 
@@ -20,8 +22,8 @@ class Level implements IState {
         var landers=Std.int(Config.getLanders()/3);
         var f = e.engine.game.factory.addLandersFunc(landers);
         e.engine.schedule(3,f);
-        e.engine.schedule(13,f);
-        e.engine.schedule(23,f);
+        e.engine.schedule(this.lander_delay,f);
+        e.engine.schedule(this.lander_delay*2,f);
 	}
 
 	public function update(c:FSMComponent, e:Entity, dt:Float) {
