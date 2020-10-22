@@ -49,13 +49,13 @@ class Search implements IState {
 			var tp:PosComponent = cast te.get(Pos);
 			if (Math.abs(tp.x - (pc.x-20)) < 2) {
 				c.next_state = Lander(Pounce);
-				if (e.engine.game.onScreen(pc.x)) {
+				if (e.engine.game.onScreen(pc.screen_x)) {
 					MessageCentre.notify(new FireBulletEvent(e, pc, e.engine.game.player_pos));
 				}
 			}
 		}
 
-		if (e.engine.game.onScreen(pc.x)) {
+		if (e.engine.game.onScreen(pc.screen_x)) {
 			if (Std.random(600) < 3) {
 				MessageCentre.notify(new FireBulletEvent(e, pc, e.engine.game.player_pos));
 			}

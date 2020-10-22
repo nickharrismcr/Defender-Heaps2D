@@ -61,16 +61,8 @@ class DrawSystem extends System implements ISystem
 			var p:PosComponent = cast e.get(Pos);
 			var d:DrawComponent = cast e.get(Draw);
 			var b = d.drawable.getBounds();
-			var posx=p.x; 
-			if ( Camera.position < sw && p.x > ww - sw )
-				posx=posx-ww;
-			if ( Camera.position > ww - sw && p.x <  sw )
-				posx=posx+ww;
-
-			if ( d.cycle ){
-				d.drawable.color = this.cycle_color;
-			}
-			d.drawable.setPosition(posx-Camera.position-b.width/2,p.y-b.height/2);
+			 
+			d.drawable.setPosition(p.screen_x-b.width/2,p.y-b.height/2);
 			d.drawable.scaleX = if (d.flip) -1 else 1;
 			
 			#if debug
@@ -78,7 +70,7 @@ class DrawSystem extends System implements ISystem
 			if ( c != null ){
 				d.text.text = '${e.id} ${c.state}';
 				d.text.textAlign = Center;
-				d.text.setPosition( 40 + posx - Camera.position, 50 + p.y);
+				d.text.setPosition( 40 + p.screen_x, 50 + p.y);
 				if (e.has(HumanFinder)){
 					var hfc:HumanFinderComponent = cast e.get(HumanFinder);
 					d.text.text += ' ${hfc.target_id}';

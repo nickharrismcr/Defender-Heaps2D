@@ -44,7 +44,7 @@ class Mutant implements IState {
 			pc.dx = pc.dx + (800 * (e.engine.game.player_pos.x > pc.x ? 1 : -1));
 		}
 
-		if (e.engine.game.onScreen(pc.x)) {
+		if ( e.engine.game.onScreen(pc.screen_x) ) {
 			if (Std.random(600) < 3) {
 				MessageCentre.notify(new FireBulletEvent(e, pc, e.engine.game.player_pos));
 			}

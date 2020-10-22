@@ -14,22 +14,22 @@ class Hud {
 		this.s2d = s2d;
 		this.gfx = new h2d.Graphics(s2d);
 		this.scoreBMPs = new Array<h2d.Bitmap>();
-		this.score = ".......";
-		this.updateScore("0123456");
+		this.updateScore(0);
 		this.scoreCol = new h3d.Vector(1, 1, 1, 1);
         this.cycle = Utils.getColorCycleGenerator(0.5);
         this.text = "";
         this.textBMPs = new Array<h2d.Bitmap>();
 	}
 
-	public function updateScore(newScore:String) {
+	public function updateScore(newScore:Int) {
 		var i = 0;
+		var s = StringTools.lpad(Std.string(newScore),'0',7);
 		for (bmp in this.scoreBMPs) {
 			this.s2d.removeChild(bmp);
 		}
-		for (i in 0...newScore.length) {
-			var bmp = GFX.getFontBitmap(newScore.charAt(i));
-			bmp.setPosition(i * 30, 30);
+		for (i in 0...s.length) {
+			var bmp = GFX.getFontBitmap(s.charAt(i));
+			bmp.setPosition( 50+i * 30, 30);
 			this.s2d.addChild(bmp);
 			this.scoreBMPs[i] = bmp;
 		}

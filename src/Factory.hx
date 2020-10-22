@@ -77,8 +77,12 @@ class Factory {
 		return () -> {
 			for (i in 0...n) {
 				var e = new Entity();
+				var pc = new PosComponent();
+				if ( i < 2){
+					pc.spawn_near_player=true;
+				}
+				e.addComponent(pc);
 				e.addComponent(new RadarDrawComponent(this.radartile, Lander));
-				e.addComponent(new PosComponent());
 				e.addComponent(new FSMComponent(Lander(Materialize)));
 				e.addComponent(new TimerComponent());
 				e.addComponent(new HumanFinderComponent());

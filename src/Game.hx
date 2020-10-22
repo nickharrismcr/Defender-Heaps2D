@@ -52,6 +52,7 @@ class Game extends hxd.App {
 	var graphics:GFX;
 	var planet:Planet;
 	var landers:Int = 0;
+	var score:Int=0;
 	
 	var tf:h2d.Text;
 	
@@ -162,7 +163,7 @@ class Game extends hxd.App {
 		GFX.init(this.s2d);
 		this.hud = new Hud(this.s2d);
 		this.planet = new Planet(s2d);
-		var f = this.factory.addStarsFunc(50);
+		var f = this.factory.addStarsFunc(200);
 		this.ecs.schedule(0.1, f);
 
 		// FPS
@@ -180,17 +181,15 @@ class Game extends hxd.App {
 	}
 
 	public function onScreen(pos:Float):Bool {
-		var tp = pos - Camera.position;
-		return (tp > 0 && tp < s2d.width);
+		return (pos > 0 && pos < s2d.width);
 	}
 
 	public override function update(dt:Float) {
-		if (this.planet != null )
-			this.planet.draw();
+	 
+		this.planet.draw();
 		this.hud.update(dt);
 		this.ecs.update(dt);
 		this.ecs.draw(dt);
-		Camera.update();
 		this.debugUpdate(dt);
 
 		// TODO move to game state
@@ -239,6 +238,8 @@ class Game extends hxd.App {
 				ef.next_state = Human(Die);
 			case Lander(_):
 				{ef.next_state = Lander(Die); this.landers--;};
+				this.score+=150;
+				this.hud.updateScore(this.score);
 			case _:
 		}
 	}
